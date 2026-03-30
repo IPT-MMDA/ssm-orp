@@ -35,10 +35,10 @@ test = [
 Repository = "https://github.com/IPT-MMDA/ssm-orp.git"
 Issues = "https://github.com/IPT-MMDA/ssm-orp/issues"
 
-[project.scripts]
-spam-cli = "spam:main_cli"
+# [project.scripts]
+# spam-cli = "spam:main_cli"
 
-[project.entry-points."spam.magical"]
-tomatoes = "spam:main_tomatoes"
+# [project.entry-points."spam.magical"]
+# tomatoes = "spam:main_tomatoes"
 
 [tool.setuptools_scm]
