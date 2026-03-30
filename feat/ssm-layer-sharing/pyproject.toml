@@ -16,7 +16,7 @@ dependencies = [
 #   "tensorflow",
   "torch",
   "torchaudio",
-  "einops"
+#   "einops"
 ]
 requires-python = ">= 3.8"
 authors = [
