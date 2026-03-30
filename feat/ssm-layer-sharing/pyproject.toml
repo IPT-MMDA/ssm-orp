@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools >= 77.0.3", "setuptools_scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ssm-layer-sharing"
+dynamic = ["version"]
+# version = "0.1.0"
+dependencies = [
+  "numpy",
+  "scipy",
+
+  "tqdm",
+  "matplotlib",
+
+#   "tensorflow",
+  "torch",
+  "torchaudio",
+  "einops"
+]
+requires-python = ">= 3.8"
+authors = [
+  {name = "Klymentiev Maksym", email = "dadmon1901@gmail.com"},
+]
+description = "Lovely Spam! Wonderful Spam!"
+readme = "README.md"
+license = "MIT"
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+]
+
+[project.urls]
+Repository = "https://github.com/IPT-MMDA/ssm-orp.git"
+Issues = "https://github.com/IPT-MMDA/ssm-orp/issues"
+
+[project.scripts]
+spam-cli = "spam:main_cli"
+
+[project.entry-points."spam.magical"]
+tomatoes = "spam:main_tomatoes"
+
+[tool.setuptools_scm]
