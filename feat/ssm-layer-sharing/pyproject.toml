@@ -42,3 +42,4 @@ Issues = "https://github.com/IPT-MMDA/ssm-orp/issues"
 # tomatoes = "spam:main_tomatoes"
 
 [tool.setuptools_scm]
+root = "../.."
