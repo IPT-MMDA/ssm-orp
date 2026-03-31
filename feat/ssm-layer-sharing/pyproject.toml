@@ -5,19 +5,6 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "ssm-layer-sharing"
 dynamic = ["version"]
-# version = "0.1.0"
-dependencies = [
-  "numpy",
-  "scipy",
-
-  "tqdm",
-  "matplotlib",
-
-#   "tensorflow",
-  "torch",
-  "torchaudio",
-#   "einops"
-]
 requires-python = ">= 3.8"
 authors = [
   {name = "Klymentiev Maksym", email = "dadmon1901@gmail.com"},
@@ -25,15 +12,30 @@ authors = [
 description = "Lovely Spam! Wonderful Spam!"
 readme = "README.md"
 license = "MIT"
+dependencies = [
+    "numpy",
+    "scipy",
+
+    "tqdm",
+    "matplotlib",
+
+    "torch",
+    "torchaudio",
+    "einops",
+    "mamba-ssm",
+    "causal-conv1d"
+]
 
 [project.optional-dependencies]
-test = [
+dev = [
     "pytest",
+    "pytest-benchmark",
+    "matplotlib"
 ]
 
 [project.urls]
-Repository = "https://github.com/IPT-MMDA/ssm-orp.git"
-Issues = "https://github.com/IPT-MMDA/ssm-orp/issues"
+Repository = "https://github.com/KlymentievMaksym/ssm-orp.git"
+Issues = "https://github.com/KlymentievMaksym/ssm-orp/issues"
 
 # [project.scripts]
 # spam-cli = "spam:main_cli"
@@ -43,3 +45,7 @@ Issues = "https://github.com/IPT-MMDA/ssm-orp/issues"
 
 [tool.setuptools_scm]
 root = "../.."
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
