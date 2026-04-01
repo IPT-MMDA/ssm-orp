@@ -1,56 +1,81 @@
-# 1. Задача (Classification Task)
-# Наші моделі зараз видають тензор форми (B, L, d_model). Тобі треба:
-#     Написати клас-обгортку SequenceClassifier(ssm_model, num_classes), яка приймає нашу Mamba (Shared або Standard).
-#     У forward зробити усереднення по часу (Mean Pooling): x.mean(dim=1).
-#     Пропустити результат через nn.Linear(d_model, num_classes).
+import argparse
 
-# 2. Дані (Synthetic Data)
-# Не витрачай час на завантаження реальних датасетів. Згенеруй X форми (1000, 64, 128) (1000 семплів, довжина 64, d_model 128) за допомогою torch.randn. Згенеруй y (мітки класів від 0 до 1) через torch.randint. Створи з цього стандартний DataLoader.
+import torch
+import torch.nn as nn
+import torch.optim as optim
 
-# 3. Тренувальний цикл (The Loop)
-# Напиши стандартний PyTorch цикл на 5-10 епох. Оптимізатор AdamW, лосс — CrossEntropyLoss. Навчи обидві моделі (окремо Standard, окремо Shared) до збіжності на цих синтетичних даних. Вони мають запам'ятати датасет (точність має наблизитися до 100%).
+from models import SequenceClassifier, StandardMamba, SharedMamba
+from dataset import get_synthetic_dataloader
 
-# 4. Науковий експеримент (Robustness & Confidence Intervals) - КРИТИЧНО!
-# Ми не просто інженери, ми дослідники. Shared архітектури часто страждають на нестабільність. Ми маємо перевірити, як моделі реагують на шум.
-# Після навчання, на етапі оцінки (evaluation), ти маєш:
-#     Додати функцію, яка маскує (занулює) 20% випадкових токенів у тестових послідовностях.
-#     Прогнати цей зашумлений тест 10 разів для кожної моделі (щоб отримати 10 значень точності для Standard і 10 для Shared).
-#     Використати scipy.stats.t.interval, щоб розрахувати 95% довірчий інтервал для середнього падіння точності.
-
-# Математично ми шукаємо довірчий інтервал для середнього μ:
-# xˉ±t_{α/2,n−1}​(s/sqrt(n)​​)
+available_models = {"standard": StandardMamba,"shared": SharedMamba}
 
 
-# feat: add basic SequenceClassifier wrapper (створив обгортку)
-# feat: implement synthetic dataset generator (написав дані)
-# feat: add training loop with AdamW (написав цикл)
-# fix: add gradient clipping to stabilize training (додав захист)
-# test: verify training convergence on small batch (перевірив, що вчиться)
+def parse_args():
+    parser = argparse.ArgumentParser(description="Train Mamba model for Sequence Classification")
+    
+    parser.add_argument("--epochs", type=int, default=10, help="Amount of epochs")
+    parser.add_argument("--batch-size", type=int, default=32, help="Batch size for DataLoader")
+    parser.add_argument("--d-model", type=int, default=128, help="Dimension of secret state (d_model)")
+    parser.add_argument("--lr", type=float, default=1e-3, help="Learning rate for optimizator")
+    choices = list(available_models.keys())
+    parser.add_argument("--model-type", type=str, default=choices[0], choices=choices, help="Mamba model type")
+    
+    return parser.parse_args()
 
+if __name__ == "__main__":
+    # 3. Тренувальний цикл (The Loop)
+    # Напиши стандартний PyTorch цикл на 5-10 епох.
+    # Оптимізатор AdamW, лосс — CrossEntropyLoss.
+    # Навчи обидві моделі (окремо Standard, окремо Shared) до збіжності на цих синтетичних даних.
+    # Вони мають запам'ятати датасет (точність має наблизитися до 100%).
 
-# 1. Оптимізатор: AdamW
-# Ми не використовуємо звичайний Adam.
-# Ми беремо torch.optim.AdamW.
-# Ваги в нашій SharedMamba відчувають шалене навантаження,
-# бо вони одночасно відповідають за витягування ознак і на першому шарі (де дані сирі), і на останньому (де дані вже абстрактні).
-# AdamW коректно застосовує Weight Decay (регуляризацію), не дозволяючи вагам розростатися до гігантських значень.
+    # feat: add training loop with AdamW (написав цикл)
+    args = parse_args()
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(f"[Train Started]\n\n[Model] {args.model_type}\n[Epochs] {args.epochs}\n[Learning Rate] {args.lr}\n[Device] {device}\n")
+    dataloader = get_synthetic_dataloader(d_model=args.d_model, batch_size=args.batch_size, num_classes=2)
+    mamba = available_models.get(args.model_type)(d_model=args.d_model, n_layers=6)
+    model = SequenceClassifier(ssm_model=mamba, d_model=args.d_model, num_classes=2)
+    model.to(device)
 
-# 2. Захист: Gradient Clipping (КРИТИЧНО)
-# Це наш запобіжник.
-# Перед кожним кроком оптимізатора (optimizer.step()) ми будемо примусово обрізати довжину вектора градієнтів, якщо він стає занадто великим.
-# Ти будеш писати такий рядок: torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0). Без цього наша Shared-модель не виживе.
+    criterion = nn.CrossEntropyLoss()
+    # 1. Оптимізатор: AdamW
+    # Ми не використовуємо звичайний Adam.
+    # Ми беремо torch.optim.AdamW.
+    # Ваги в нашій SharedMamba відчувають шалене навантаження,
+    # бо вони одночасно відповідають за витягування ознак і на першому шарі (де дані сирі), і на останньому (де дані вже абстрактні).
+    # AdamW коректно застосовує Weight Decay (регуляризацію), не дозволяючи вагам розростатися до гігантських значень.
+    optimizer = optim.AdamW(model.parameters(), lr=args.lr)
 
-# 3. Scheduler: Linear Warmup + Cosine Decay
-# На старті навчання ваги ініціалізовані випадково.
-# Якщо ми відразу дамо великий крок навчання (Learning Rate), градієнти зійдуть з розуму через N проходів.
-# Тому ми почнемо з мікроскопічних кроків і будемо плавно їх збільшувати перші 10% епох (Warmup).
-# Коли модель "намацає" правильний напрямок,
-# ми почнемо плавно зменшувати крок по косинусоїді (Cosine Decay), щоб акуратно спуститися в локальний мінімум лосс-функції.
+    for epoch in range(args.epochs):
+        model.train()
+        total_loss = 0.0
 
+        for batch_idx, (X, y) in enumerate(dataloader):
+            X, y = X.to(device), y.to(device)
 
-# Твій головний скрипт.
-#     Твоя задача: Написати чистий тренувальний цикл.
-#       Ініціалізація StandardMamba та SharedMamba, оптимізатор AdamW, планувальник learning rate (наприклад, Cosine Annealing).
-#     Критичний нюанс: Тобі доведеться реалізувати Gradient Clipping (torch.nn.utils.clip_grad_norm_).
-#       Оскільки в SharedMamba градієнти протікають через одні й ті самі ваги N разів,
-#       ризик вибуху градієнтів (exploding gradients) тут набагато вищий, ніж у базовій моделі.
+            optimizer.zero_grad()
+
+            logits = model(X)
+            loss = criterion(logits, y)
+            loss.backward()
+
+            # 2. Захист: Gradient Clipping (КРИТИЧНО)
+            # Це наш запобіжник.
+            # Перед кожним кроком оптимізатора (optimizer.step()) ми будемо примусово обрізати довжину вектора градієнтів, якщо він стає занадто великим.
+            # Ти будеш писати такий рядок: torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0). Без цього наша Shared-модель не виживе.
+            nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+
+            # TODO: 3. Scheduler: Linear Warmup + Cosine Decay
+            # На старті навчання ваги ініціалізовані випадково.
+            # Якщо ми відразу дамо великий крок навчання (Learning Rate), градієнти зійдуть з розуму через N проходів.
+            # Тому ми почнемо з мікроскопічних кроків і будемо плавно їх збільшувати перші 10% епох (Warmup).
+            # Коли модель "намацає" правильний напрямок,
+            # ми почнемо плавно зменшувати крок по косинусоїді (Cosine Decay), щоб акуратно спуститися в локальний мінімум лосс-функції.
+            optimizer.step()
+
+            total_loss += loss.item()
+        avg_loss = total_loss / len(dataloader)
+        pad = len(str(args.epochs))
+        print(f"[Epochs] [{(epoch+1):>{pad}}/{args.epochs}] | [Loss] {avg_loss:.8f}")
+    print("\n[Train Finished]")
