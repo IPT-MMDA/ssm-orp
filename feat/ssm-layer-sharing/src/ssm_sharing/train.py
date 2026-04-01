@@ -1,3 +1,6 @@
+import time
+start = time.time()
+
 import argparse
 
 import torch
@@ -30,9 +33,10 @@ if __name__ == "__main__":
     # Вони мають запам'ятати датасет (точність має наблизитися до 100%).
 
     # feat: add training loop with AdamW (написав цикл)
+    start = time.time()
     args = parse_args()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(f"[Train Started]\n\n[Model] {args.model_type}\n[Epochs] {args.epochs}\n[Learning Rate] {args.lr}\n[Device] {device}\n")
+    print(f"[Train Started] {time.time() - start:.2f}s\n\n[Model] {args.model_type}\n[Epochs] {args.epochs}\n[Learning Rate] {args.lr}\n[Device] {device}\n")
     dataloader = get_synthetic_dataloader(d_model=args.d_model, batch_size=args.batch_size, num_classes=2)
     mamba = available_models.get(args.model_type)(d_model=args.d_model, n_layers=6)
     model = SequenceClassifier(ssm_model=mamba, d_model=args.d_model, num_classes=2)
@@ -50,6 +54,8 @@ if __name__ == "__main__":
     for epoch in range(args.epochs):
         model.train()
         total_loss = 0.0
+        total_correct = 0
+        total_samples = 0
 
         for batch_idx, (X, y) in enumerate(dataloader):
             X, y = X.to(device), y.to(device)
@@ -57,6 +63,12 @@ if __name__ == "__main__":
             optimizer.zero_grad()
 
             logits = model(X)
+
+            preds = torch.argmax(logits, dim=1)
+            correct = (preds == y).sum().item()
+            total_correct += correct
+            total_samples += y.size(0)
+
             loss = criterion(logits, y)
             loss.backward()
 
@@ -77,5 +89,5 @@ if __name__ == "__main__":
             total_loss += loss.item()
         avg_loss = total_loss / len(dataloader)
         pad = len(str(args.epochs))
-        print(f"[Epochs] [{(epoch+1):>{pad}}/{args.epochs}] | [Loss] {avg_loss:.8f}")
-    print("\n[Train Finished]")
+        print(f"[Epochs] [{(epoch+1):>{pad}}/{args.epochs}] | [Loss] {avg_loss:.8f} | [Accuracy] {total_correct/total_samples}")
+    print(f"\n[Train Finished] {time.time() - start:.2f}s")
