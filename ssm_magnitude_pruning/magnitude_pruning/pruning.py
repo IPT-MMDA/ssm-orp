@@ -4,14 +4,14 @@ Iterative Magnitude Pruning (IMP) for MambaForecaster.
 Strategy
 --------
 Global unstructured magnitude pruning:
-  For a given target sparsity s Є [0, 1), compute a single threshold t such
-  that exactly s% of all prunable weights have |w| < t, then set them to zero
-  and freeze the corresponding mask.
+    For a given target sparsity s Є [0, 1), compute a single threshold t such
+    that exactly s% of all prunable weights have |w| < t, then set them to zero
+    and freeze the corresponding mask.
 
 Why global rather than per-layer?
-  Layer-wise pruning with a uniform rate destroys the narrower Mamba matrices
-  (which have fewer parameters) disproportionately.  A global threshold
-  distributes the budget according to actual weight magnitudes.
+    Layer-wise pruning with a uniform rate destroys the narrower Mamba matrices
+    (which have fewer parameters) disproportionately.  A global threshold
+    distributes the budget according to actual weight magnitudes.
 
 Mask storage
 ------------
@@ -175,10 +175,10 @@ def sparsity_schedule(
     the "breaking point" typically occurs.
     """
     if log_scale:
-        # Power ramp: t^3 maps [0,1] → [0,1] with most density near t=1
+        # Power ramp: t^3 maps [0,1] -> [0,1] with most density near t=1
         # so the schedule has finer resolution at high sparsities (where the
         # "breaking point" typically occurs).
-        # 1-(1-t)^3 maps [0,1]→[0,1] with high density near t=1
+        # 1-(1-t)^3 maps [0,1]->[0,1] with high density near t=1
         linspace = np.linspace(0, 1, n_steps)
         schedule = [start + (end - start) * float(1 - (1 - t) ** 3) for t in linspace]
         return [round(s, 4) for s in schedule]

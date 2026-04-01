@@ -89,7 +89,7 @@ def test_actual_sparsity_approximate():
     model = TinyModel()
     prune_to_sparsity(model, 0.5)
     s = get_sparsity(model)
-    # Allow ±5% tolerance because quantile at discrete weights
+    # Allow +-5% tolerance because quantile at discrete weights
     assert 0.45 <= s <= 0.55, f"Expected ~50% sparsity, got {s:.2%}"
 
 

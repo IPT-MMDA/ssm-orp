@@ -4,9 +4,9 @@ Synthetic time-series dataset generation.
 Uses the Mackey-Glass delay-differential equation - a canonical benchmark for
 chaotic dynamics that stresses the long-range memory of sequence models.
 
-  dx/dt = β * θ^n * x(t-τ) / (θ^n + x(t-τ)^n) - γ * x(t)
-  θ = 1, β=0.2, γ=0.1, n=10, τ=17  → mildly chaotic regime
-  τ=30                        → strongly chaotic regime
+  dx/dt = beta * theta^n * x(t-tau) / (theta^n + x(t-tau)^n) - gamma * x(t)
+  theta = 1, beta=0.2, gamma=0.1, n=10, tau=17  -> mildly chaotic regime
+  tau=30                                        -> strongly chaotic regime
 """
 
 from __future__ import annotations
@@ -82,8 +82,8 @@ class TimeSeriesDataset(Dataset):
         return len(self.series) - self.seq_len - self.horizon + 1
 
     def __getitem__(self, idx: int):
-        x = self.series[idx : idx + self.seq_len].unsqueeze(-1)   # (L, 1)
-        y = self.series[idx + self.seq_len : idx + self.seq_len + self.horizon]  # (H,)
+        x = self.series[idx : idx + self.seq_len].unsqueeze(-1)   # (seq_len, 1)
+        y = self.series[idx + self.seq_len : idx + self.seq_len + self.horizon]  # (horizon,)
         return x, y
 
 

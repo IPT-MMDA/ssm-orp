@@ -73,7 +73,7 @@ class ExperimentConfig:
 
     # Experiment
     seeds: list[int] = field(default_factory=lambda: [42, 7, 123])
-    device: str = "cuda"           # "cuda" on Colab, "cpu" for local debug
+    device: str = "cuda"           
 
     # "Breaking point" criterion:
     #   val_mse > breaking_factor x baseline_mse  AND  val_mse > breaking_floor
@@ -228,7 +228,7 @@ def run_experiment(
     dict with keys:
       'seeds'            : list[int]
       'per_seed'         : list[dict]   - raw output of run_single_seed per seed
-      'sparsities'       : np.ndarray   - common sparsity axis (mean across seeds)
+      'sparsities'       : np.ndarray   
       'val_mse_mean/std' : np.ndarray
       'test_mse_mean/std': np.ndarray
       'test_mse_anomaly_mean/std' : np.ndarray

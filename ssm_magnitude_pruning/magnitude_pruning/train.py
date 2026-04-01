@@ -1,7 +1,6 @@
 """
 Training and fine-tuning routines for MambaForecaster.
 
-Two public entry points:
   train_epoch     – run one full epoch, return mean MSE loss
   evaluate        – compute MSE and MAE on a DataLoader (no grad)
   train_model     – full training loop with early stopping
@@ -26,10 +25,8 @@ def train_epoch(
     model: nn.Module,
     loader: DataLoader,
     optimiser: torch.optim.Optimizer,
-    device: torch.device,
-    mask_grads: bool = False,
-    grad_handles: list | None = None,
-) -> float:
+    device: torch.device
+    ) -> float:
     """Run one training epoch and return the mean MSE loss."""
     model.train()
     criterion = nn.MSELoss()

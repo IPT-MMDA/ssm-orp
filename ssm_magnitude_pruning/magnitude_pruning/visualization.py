@@ -26,7 +26,7 @@ def plot_sparsity_vs_mse(
 ) -> plt.Figure:
     """
     Plots val_mse and (optionally) anomaly test_mse against sparsity with
-    +-1σ confidence bands across seeds.
+    +-1std confidence bands across seeds.
 
     A vertical dashed line marks the median breaking point.
     """
@@ -35,7 +35,7 @@ def plot_sparsity_vs_mse(
     else:
         fig = ax.figure
 
-    s = results["sparsities"] * 100   # → percentage
+    s = results["sparsities"] * 100   # percentage
 
     # Dense baseline reference line
     baseline_mean = float(np.mean(results["baseline_val_mse"]))
@@ -44,13 +44,13 @@ def plot_sparsity_vs_mse(
 
     # Val MSE curve
     _plot_band(ax, s, results["val_mse_mean"], results["val_mse_std"],
-               color="steelblue", label="Val MSE (+-1σ)")
+               color="steelblue", label="Val MSE (+-1std)")
 
     # Anomaly test MSE curve
     if show_anomaly:
         _plot_band(ax, s, results["test_mse_anomaly_mean"],
                    results["test_mse_anomaly_std"],
-                   color="tomato", label="Test MSE w/ anomalies (+-1σ)", alpha=0.2)
+                   color="tomato", label="Test MSE w/ anomalies (+-1std)", alpha=0.2)
 
     # Breaking-point line (median across seeds)
     bps = [b for b in results["breaking_points"] if b is not None]
@@ -61,7 +61,7 @@ def plot_sparsity_vs_mse(
 
     ax.set_xlabel("Sparsity (%)")
     ax.set_ylabel("MSE")
-    ax.set_title("Sparsity vs. MSE  ·  Iterative Magnitude Pruning on Mamba SSM")
+    ax.set_title("Sparsity vs. MSE | Iterative Magnitude Pruning on Mamba SSM")
     ax.legend(loc="upper left")
     fig.tight_layout()
     return fig
@@ -97,9 +97,9 @@ def plot_robustness_degradation(
     # Find the closest index for each checkpoint
     idxs = [int(np.argmin(np.abs(sparsities - cp))) for cp in sparsity_checkpoints]
 
-    labels  = [f"{sparsities[i]*100:.0f}%" for i in idxs]
+    labels  = [f"{sparsities[i]*100:.0f}%"         for i in idxs]
     clean   = [results["test_mse_mean"][i]         for i in idxs]
-    anomaly = [results["test_mse_anomaly_mean"][i]  for i in idxs]
+    anomaly = [results["test_mse_anomaly_mean"][i] for i in idxs]
 
     x   = np.arange(len(labels))
     w   = 0.35
@@ -110,7 +110,7 @@ def plot_robustness_degradation(
     ax.set_xticklabels(labels)
     ax.set_xlabel("Sparsity")
     ax.set_ylabel("MSE")
-    ax.set_title("Robustness Degradation: Clean vs. Anomaly MSE at Key Sparsity Levels")
+    ax.set_title("Robustness Degradation: Clean vs Anomaly MSE at Key Sparsity Levels")
     ax.legend()
     fig.tight_layout()
     return fig
@@ -153,7 +153,7 @@ def plot_dashboard(results: dict) -> plt.Figure:
     plot_sparsity_vs_mse(results, ax=axes[1])
     plot_robustness_degradation(results, ax=axes[2])
     fig.suptitle(
-        "IMP on Mamba SSM — Mackey-Glass Forecasting",
+        "IMP on Mamba SSM - Mackey-Glass Forecasting",
         fontsize=14, fontweight="bold", y=1.02,
     )
     fig.tight_layout()
