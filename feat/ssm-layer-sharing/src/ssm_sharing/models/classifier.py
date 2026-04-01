@@ -10,13 +10,13 @@ import torch.nn as nn
 
 # feat: add SequenceClassifier wrapper model for mamba models
 class SequenceClassifier(nn.Module):
-    def __init__(self, ssm_model: nn.Module | nn.ModuleList, d_model: int, num_classes: int):
+    def __init__(self, ssm_model: nn.Module, d_model: int, num_classes: int):
         super().__init__()
         self.ssm_model = ssm_model
         self.head = nn.Linear(d_model, num_classes)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        out = self.ssm_model(x)
+        out = self.ssm_model(x)  # b s d -> b s d
         pooled = out.mean(dim=1)  # Mean Pooling: b s d -> b d
         logits = self.head(pooled)  # b d -> b n
         return logits
