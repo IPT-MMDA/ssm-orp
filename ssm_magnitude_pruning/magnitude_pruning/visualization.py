@@ -44,13 +44,13 @@ def plot_sparsity_vs_mse(
 
     # Val MSE curve
     _plot_band(ax, s, results["val_mse_mean"], results["val_mse_std"],
-               color="steelblue", label="Val MSE (±1σ)")
+               color="steelblue", label="Val MSE (+-1σ)")
 
     # Anomaly test MSE curve
     if show_anomaly:
         _plot_band(ax, s, results["test_mse_anomaly_mean"],
                    results["test_mse_anomaly_std"],
-                   color="tomato", label="Test MSE w/ anomalies (±1σ)", alpha=0.2)
+                   color="tomato", label="Test MSE w/ anomalies (+-1σ)", alpha=0.2)
 
     # Breaking-point line (median across seeds)
     bps = [b for b in results["breaking_points"] if b is not None]

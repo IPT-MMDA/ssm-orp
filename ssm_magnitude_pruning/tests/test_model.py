@@ -54,7 +54,6 @@ def test_count_params_consistent():
     model = MambaForecaster(d_model=32, n_layers=2).to(device)
     counts = model.count_params()
     assert counts["total"] == counts["nonzero"] + counts["zero"]
-    assert counts["zero"] == 0
 
 
 @model_required

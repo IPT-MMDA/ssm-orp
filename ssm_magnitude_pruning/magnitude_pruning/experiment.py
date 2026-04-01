@@ -75,8 +75,12 @@ class ExperimentConfig:
     seeds: list[int] = field(default_factory=lambda: [42, 7, 123])
     device: str = "cuda"           # "cuda" on Colab, "cpu" for local debug
 
-    # "Breaking point" criterion: val_mse > breaking_factor x baseline_mse
+    # "Breaking point" criterion:
+    #   val_mse > breaking_factor x baseline_mse  AND  val_mse > breaking_floor
+    # The floor prevents early triggering when baseline is near zero (perfect fit),
+    # where even numerical noise would satisfy the relative criterion alone.
     breaking_factor: float = 5.0
+    breaking_floor:  float = 1e-3
 
 
 # ---------------------------------------------------------------------------
@@ -196,9 +200,10 @@ def run_single_seed(
         if verbose:
             print(f"actual={actual_s:.2%}  val_mse={val_m['mse']:.5f}")
 
-        # Check breaking point
-        if (breaking_point is None
-                and val_m["mse"] > cfg.breaking_factor * baseline_val_mse):
+        # Check breaking point: relative degradation AND above absolute floor.
+        # The floor guards against false triggers when baseline_val_mse ≈ 0.
+        bp_threshold = max(cfg.breaking_factor * baseline_val_mse, cfg.breaking_floor)
+        if breaking_point is None and val_m["mse"] > bp_threshold:
             breaking_point = actual_s
 
     results["baseline_val_mse"] = baseline_val_mse
