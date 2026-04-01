@@ -17,7 +17,7 @@ The **Mackey-Glass delay-differential equation** generates a normalised,
 mildly/strongly chaotic 1-D time series:
 
 ```
-dx/dt = β·x(t-tau) / (1 + x(t-tau)^n) - gamma·x(t)
+dx/dt = beta·x(t-tau) / (1 + x(t-tau)^n) - gamma·x(t)
 tau=17 -> mild chaos   |   tau=30 -> strong chaos
 ```
 
@@ -66,7 +66,7 @@ Three parameter groups are **intentionally excluded** from pruning:
 - all biases - standard IMP convention; biases are small in count and critical for activation shifts
 
 ### Breaking point criterion
-`val_MSE > max(5 × baseline_val_MSE, 1e-3)`
+`val_MSE > max(5 x baseline_val_MSE, 1e-3)`
 
 The floor `1e-3` prevents false triggers when `baseline_val_MSE` is near zero (near-perfect dense fit), where even numerical noise would satisfy the relative criterion alone.
 

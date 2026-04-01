@@ -27,5 +27,3 @@ htmlcov/
 # VS Code
 .vscode/
 
-# Claude Code memory (local dev tool, not part of the project)
-.claude/
