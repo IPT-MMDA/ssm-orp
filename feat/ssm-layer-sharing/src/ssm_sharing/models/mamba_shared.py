@@ -32,6 +32,6 @@ class SharedMamba(nn.Module):
         """
         # Рекурсивний прохід по глибині. 
         for _ in range(self.n_layers):
-            x = self.shared_block(x) + x  # Residual connection є критичним для збіжності!
+            x = self.shared_block(self.norm(x)) + x  # Residual connection є критичним для збіжності!
             
-        return self.norm(x)
+        return x
