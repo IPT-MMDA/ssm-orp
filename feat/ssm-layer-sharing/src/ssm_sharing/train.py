@@ -21,6 +21,13 @@
 # xˉ±t_{α/2,n−1}​(s/sqrt(n)​​)
 
 
+# feat: add basic SequenceClassifier wrapper (створив обгортку)
+# feat: implement synthetic dataset generator (написав дані)
+# feat: add training loop with AdamW (написав цикл)
+# fix: add gradient clipping to stabilize training (додав захист)
+# test: verify training convergence on small batch (перевірив, що вчиться)
+
+
 # 1. Оптимізатор: AdamW
 # Ми не використовуємо звичайний Adam.
 # Ми беремо torch.optim.AdamW.
