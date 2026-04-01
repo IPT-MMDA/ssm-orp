@@ -1,6 +1,6 @@
 [build-system]
 requires = ["setuptools>=68", "wheel"]
-build-backend = "setuptools.backends.legacy:build"
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "ssm-magnitude-pruning"
@@ -18,17 +18,19 @@ dependencies = [
 
     # Progress & utilities
     "tqdm>=4.66",
+
+    # NOTE: torch, causal-conv1d, mamba-ssm require CUDA and cannot be
+    # installed in a plain .venv on CPU-only machines.
+    # Install them manually after activating the venv:
+    #
+    #   pip install torch==2.4.0 --index-url https://download.pytorch.org/whl/cu121
+    #   pip install causal-conv1d==1.4.0
+    #   pip install mamba-ssm==2.2.2 --no-build-isolation
+    #
+    # On Google Colab installed by notebook cell 0.
 ]
 
 [project.optional-dependencies]
-# GPU dependencies require a CUDA environment; install separately on Colab (T4):
-#   !pip install torch==2.4.0 --index-url https://download.pytorch.org/whl/cu121
-#   !pip install causal-conv1d==1.4.0 && pip install mamba-ssm==2.2.2 --no-build-isolation
-gpu = [
-    "torch>=2.1",
-    "causal-conv1d>=1.2",
-    "mamba-ssm>=2.0",
-]
 dev = [
     "pytest>=8.0",
     "pytest-cov>=5.0",
