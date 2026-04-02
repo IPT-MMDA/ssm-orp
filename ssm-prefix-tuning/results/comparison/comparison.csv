@@ -1,0 +1,5 @@
+method,best_val_acc,best_val_f1,ci_lower,ci_upper,epochs_to_best,trainable_params
+lora,0.6686,0.6296,0.6388,0.6995,3,1491456
+full,0.6388,0.6202,0.6089,0.672,2,129136896
+prefix_periodic,0.5,0.4973,0.4667,0.5333,2,9216
+prefix,0.5,0.4973,0.4667,0.5333,2,9216
