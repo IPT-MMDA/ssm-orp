@@ -37,8 +37,8 @@ dev = [
 Repository = "https://github.com/KlymentievMaksym/ssm-orp.git"
 Issues = "https://github.com/KlymentievMaksym/ssm-orp/issues"
 
-# [project.scripts]
-# spam-cli = "spam:main_cli"
+[project.scripts]
+train = "ssm_sharing.train:train_command"
 
 # [project.entry-points."spam.magical"]
 # tomatoes = "spam:main_tomatoes"
