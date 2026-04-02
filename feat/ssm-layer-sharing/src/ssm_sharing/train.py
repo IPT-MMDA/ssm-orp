@@ -7,8 +7,8 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
-from models import SequenceClassifier, StandardMamba, SharedMamba
-from dataset import get_synthetic_dataloader
+from .models import SequenceClassifier, StandardMamba, SharedMamba
+from .dataset import get_synthetic_dataloader
 
 available_models = {"standard": StandardMamba,"shared": SharedMamba}
 
@@ -21,25 +21,15 @@ def parse_args():
     parser.add_argument("--d-model", type=int, default=128, help="Dimension of secret state (d_model)")
     parser.add_argument("--lr", type=float, default=1e-3, help="Learning rate for optimizator")
     choices = list(available_models.keys())
-    parser.add_argument("--model-type", type=str, default=choices[0], choices=choices, help="Mamba model type")
+    parser.add_argument("--model-type", type=str, default="", choices=choices, help="Mamba model type")  #choices[0]
     
     return parser.parse_args()
 
-if __name__ == "__main__":
-    # 3. Тренувальний цикл (The Loop)
-    # Напиши стандартний PyTorch цикл на 5-10 епох.
-    # Оптимізатор AdamW, лосс — CrossEntropyLoss.
-    # Навчи обидві моделі (окремо Standard, окремо Shared) до збіжності на цих синтетичних даних.
-    # Вони мають запам'ятати датасет (точність має наблизитися до 100%).
-
-    # feat: add training loop with AdamW (написав цикл)
+def train(mamba: nn.Module, args: argparse.Namespace, num_classes: int, device: torch.device):
+    print(f"[Train Started]\n\n[Model] {mamba._get_name()}\n[Epochs] {args.epochs}\n[Learning Rate] {args.lr}\n[Device] {device}\n")
     start = time.time()
-    args = parse_args()
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(f"[Train Started] {time.time() - start:.2f}s\n\n[Model] {args.model_type}\n[Epochs] {args.epochs}\n[Learning Rate] {args.lr}\n[Device] {device}\n")
-    dataloader = get_synthetic_dataloader(d_model=args.d_model, batch_size=args.batch_size, num_classes=2)
-    mamba = available_models.get(args.model_type)(d_model=args.d_model, n_layers=6)
-    model = SequenceClassifier(ssm_model=mamba, d_model=args.d_model, num_classes=2)
+
+    model = SequenceClassifier(ssm_model=mamba, d_model=args.d_model, num_classes=num_classes)
     model.to(device)
 
     criterion = nn.CrossEntropyLoss()
@@ -52,6 +42,7 @@ if __name__ == "__main__":
     optimizer = optim.AdamW(model.parameters(), lr=args.lr)
 
     for epoch in range(args.epochs):
+        start_ = time.time()
         model.train()
         total_loss = 0.0
         total_correct = 0
@@ -89,5 +80,29 @@ if __name__ == "__main__":
             total_loss += loss.item()
         avg_loss = total_loss / len(dataloader)
         pad = len(str(args.epochs))
-        print(f"[Epochs] [{(epoch+1):>{pad}}/{args.epochs}] | [Loss] {avg_loss:.8f} | [Accuracy] {total_correct/total_samples}")
-    print(f"\n[Train Finished] {time.time() - start:.2f}s")
+        print(f"[Time] {time.time() - start_:.2f}s | [Epochs] [{(epoch+1):>{pad}}/{args.epochs}] | [Loss] {avg_loss:.8f} | [Accuracy] {total_correct/total_samples}")
+    print(f"\n[Train Finished] {time.time() - start:.2f}s\n")
+
+
+
+if __name__ == "__main__":
+    # 3. Тренувальний цикл (The Loop)
+    # Напиши стандартний PyTorch цикл на 5-10 епох.
+    # Оптимізатор AdamW, лосс — CrossEntropyLoss.
+    # Навчи обидві моделі (окремо Standard, окремо Shared) до збіжності на цих синтетичних даних.
+    # Вони мають запам'ятати датасет (точність має наблизитися до 100%).
+
+    # feat: add training loop with AdamW (написав цикл)
+    args = parse_args()
+    num_classes = 2
+    n_layers = 6
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    dataloader = get_synthetic_dataloader(d_model=args.d_model, batch_size=args.batch_size, num_classes=num_classes)
+
+    mamba = available_models.get(args.model_type)
+    if mamba is not None:
+        train(mamba(d_model=args.d_model, n_layers=n_layers), args, num_classes, device)
+    else:
+        for mamba in available_models.values():
+            train(mamba(d_model=args.d_model, n_layers=n_layers), args, num_classes, device)
