@@ -1,14 +1,15 @@
 import time
-start = time.time()
+# start = time.time()
 
 import argparse
+import os
 
 import torch
 import torch.nn as nn
 import torch.optim as optim
 
-from .models import SequenceClassifier, StandardMamba, SharedMamba
-from .dataset import get_synthetic_dataloader
+from ssm_sharing.models import SequenceClassifier, StandardMamba, SharedMamba
+from ssm_sharing.dataset import get_synthetic_dataloader, DataLoader
 
 available_models = {"standard": StandardMamba,"shared": SharedMamba}
 
@@ -21,26 +22,26 @@ def parse_args():
     parser.add_argument("--d-model", type=int, default=128, help="Dimension of secret state (d_model)")
     parser.add_argument("--lr", type=float, default=1e-3, help="Learning rate for optimizator")
     choices = list(available_models.keys())
-    parser.add_argument("--model-type", type=str, default="", choices=choices, help="Mamba model type")  #choices[0]
+    parser.add_argument("--model", type=str, default="", choices=choices, help="Mamba model type")  #choices[0]
+    parser.add_argument("--save", type=bool, default=True, help="Save at the end of training")
+    parser.add_argument("--save-on-iteration", type=bool, default=False, help="Save at the end of each epoch of training")
     
     return parser.parse_args()
 
-def train(mamba: nn.Module, args: argparse.Namespace, num_classes: int, device: torch.device):
-    print(f"[Train Started]\n\n[Model] {mamba._get_name()}\n[Epochs] {args.epochs}\n[Learning Rate] {args.lr}\n[Device] {device}\n")
+def train(dataloader: DataLoader, mamba: nn.Module, args: argparse.Namespace, num_classes: int, device: torch.device):
+    dir_name = "models_saved"
+    if args.save_on_iteration or args.save: 
+        if not os.path.exists(dir_name): os.mkdir(dir_name)
     start = time.time()
 
     model = SequenceClassifier(ssm_model=mamba, d_model=args.d_model, num_classes=num_classes)
     model.to(device)
 
     criterion = nn.CrossEntropyLoss()
-    # 1. Оптимізатор: AdamW
-    # Ми не використовуємо звичайний Adam.
-    # Ми беремо torch.optim.AdamW.
-    # Ваги в нашій SharedMamba відчувають шалене навантаження,
-    # бо вони одночасно відповідають за витягування ознак і на першому шарі (де дані сирі), і на останньому (де дані вже абстрактні).
-    # AdamW коректно застосовує Weight Decay (регуляризацію), не дозволяючи вагам розростатися до гігантських значень.
     optimizer = optim.AdamW(model.parameters(), lr=args.lr)
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.epochs)
 
+    print(f"[Train Started] On {time.time() - start:.2f}s\n\n[Model] {mamba._get_name()}\n[Epochs] {args.epochs}\n[Learning Rate] {args.lr}\n[Device] {device}\n")
     for epoch in range(args.epochs):
         start_ = time.time()
         model.train()
@@ -54,55 +55,54 @@ def train(mamba: nn.Module, args: argparse.Namespace, num_classes: int, device: 
             optimizer.zero_grad()
 
             logits = model(X)
-
-            preds = torch.argmax(logits, dim=1)
-            correct = (preds == y).sum().item()
-            total_correct += correct
-            total_samples += y.size(0)
-
             loss = criterion(logits, y)
             loss.backward()
 
-            # 2. Захист: Gradient Clipping (КРИТИЧНО)
-            # Це наш запобіжник.
-            # Перед кожним кроком оптимізатора (optimizer.step()) ми будемо примусово обрізати довжину вектора градієнтів, якщо він стає занадто великим.
-            # Ти будеш писати такий рядок: torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0). Без цього наша Shared-модель не виживе.
             nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
 
-            # TODO: 3. Scheduler: Linear Warmup + Cosine Decay
-            # На старті навчання ваги ініціалізовані випадково.
-            # Якщо ми відразу дамо великий крок навчання (Learning Rate), градієнти зійдуть з розуму через N проходів.
-            # Тому ми почнемо з мікроскопічних кроків і будемо плавно їх збільшувати перші 10% епох (Warmup).
-            # Коли модель "намацає" правильний напрямок,
-            # ми почнемо плавно зменшувати крок по косинусоїді (Cosine Decay), щоб акуратно спуститися в локальний мінімум лосс-функції.
             optimizer.step()
 
+            preds = torch.argmax(logits, dim=1)
+            correct = (preds == y).sum().item()
+
+            total_correct += correct
             total_loss += loss.item()
+            total_samples += y.size(0)
+
+        scheduler.step()
+
         avg_loss = total_loss / len(dataloader)
         pad = len(str(args.epochs))
-        print(f"[Time] {time.time() - start_:.2f}s | [Epochs] [{(epoch+1):>{pad}}/{args.epochs}] | [Loss] {avg_loss:.8f} | [Accuracy] {total_correct/total_samples}")
+        epochs = str(epoch+1).zfill(pad)
+        print(f"[Time] {time.time() - start_:.2f}s | [Epochs] [{epochs}/{args.epochs}] | [Current LR] {scheduler.get_last_lr()[0]:.6f} | [Loss] {avg_loss:.8f} | [Accuracy] {total_correct/total_samples}")
+        if args.save_on_iteration: torch.save(model.state_dict(), f"{dir_name}/{mamba._get_name()}_e{epochs}_l{avg_loss:.8f}.pt")
     print(f"\n[Train Finished] {time.time() - start:.2f}s\n")
+    if args.save:
+        path = f"{dir_name}/{mamba._get_name()}.pt"
+        print(f"[Saved] {path}")
+        torch.save(model.state_dict(), path)
+    del model
+    torch.cuda.empty_cache()
 
+def train_launch(mamba: nn.Module, args: argparse.Namespace, n_layers: int, num_classes: int, device: torch.device):
+    dataloader = get_synthetic_dataloader(d_model=args.d_model, batch_size=args.batch_size, num_classes=num_classes)
+    train(dataloader, mamba(d_model=args.d_model, n_layers=n_layers), args, num_classes, device)
 
-
-if __name__ == "__main__":
-    # 3. Тренувальний цикл (The Loop)
-    # Напиши стандартний PyTorch цикл на 5-10 епох.
-    # Оптимізатор AdamW, лосс — CrossEntropyLoss.
-    # Навчи обидві моделі (окремо Standard, окремо Shared) до збіжності на цих синтетичних даних.
-    # Вони мають запам'ятати датасет (точність має наблизитися до 100%).
-
-    # feat: add training loop with AdamW (написав цикл)
+def train_command():
+    # feat: add training loop with AdamW
     args = parse_args()
     num_classes = 2
     n_layers = 6
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    dataloader = get_synthetic_dataloader(d_model=args.d_model, batch_size=args.batch_size, num_classes=num_classes)
 
-    mamba = available_models.get(args.model_type)
+    mamba = available_models.get(args.model)
     if mamba is not None:
-        train(mamba(d_model=args.d_model, n_layers=n_layers), args, num_classes, device)
+        train_launch(mamba, args, n_layers, num_classes, device)
     else:
         for mamba in available_models.values():
-            train(mamba(d_model=args.d_model, n_layers=n_layers), args, num_classes, device)
+            train_launch(mamba, args, n_layers, num_classes, device)
+
+
+if __name__ == "__main__":
+    train_command()
