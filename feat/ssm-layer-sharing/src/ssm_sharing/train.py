@@ -72,15 +72,20 @@ def train(dataloader: DataLoader, mamba: nn.Module, args: argparse.Namespace, nu
         scheduler.step()
 
         avg_loss = total_loss / len(dataloader)
+
         pad = len(str(args.epochs))
         epochs = str(epoch+1).zfill(pad)
         print(f"[Time] {time.time() - start_:.2f}s | [Epochs] [{epochs}/{args.epochs}] | [Current LR] {scheduler.get_last_lr()[0]:.6f} | [Loss] {avg_loss:.8f} | [Accuracy] {total_correct/total_samples}")
-        if args.save_on_iteration: torch.save(model.state_dict(), f"{dir_name}/{mamba._get_name()}_e{epochs}_l{avg_loss:.8f}.pt")
+        if args.save_on_iteration:
+            torch.save(model.state_dict(), f"{dir_name}/{mamba._get_name()}_e{epochs}_l{avg_loss:.8f}.pt")
+
     print(f"\n[Train Finished] {time.time() - start:.2f}s\n")
+
     if args.save:
         path = f"{dir_name}/{mamba._get_name()}.pt"
         print(f"[Saved] {path}")
         torch.save(model.state_dict(), path)
+
     del model
     torch.cuda.empty_cache()
 
@@ -89,7 +94,7 @@ def train_launch(mamba: nn.Module, args: argparse.Namespace, n_layers: int, num_
     train(dataloader, mamba(d_model=args.d_model, n_layers=n_layers), args, num_classes, device)
 
 def train_command():
-    # feat: add training loop with AdamW
+    # feat: add training loop with AdamW, CrossEntropyLoss and CosineAnnealingLR
     args = parse_args()
     num_classes = 2
     n_layers = 6
