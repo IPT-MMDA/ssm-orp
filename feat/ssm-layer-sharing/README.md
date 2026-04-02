@@ -16,15 +16,34 @@ git clone https://github.com/IPT-MMDA/ssm-orp.git
 cd feat/ssm-layer-sharing
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -e ".[dev]"
 ```
+
+For users
+
+```bash
+pip install .
+```
+
+For developers
+
+```bash
+pip install -e .[dev]
+```
+
+***
 
 ### Training
 
 ```bash
-python3 train.py
+train
+```
+
+Get help
+
+```bash
+train --help
 ```
 
 ## My Task
 
-*Моя задача:* Написати вичерпний звіт. Математичне обґрунтування через LaTeX, зведена таблиця кількості параметрів (із нашого сьогоднішнього тесту), таблиця з метриками (Accuracy на чистих даних vs Accuracy на зашумлених) та інструкція, як запустити `train.py`.
+*Моя задача:* Написати вичерпний звіт. Математичне обґрунтування через LaTeX, зведена таблиця кількості параметрів, таблиця з метриками (Accuracy на чистих даних vs Accuracy на зашумлених).
