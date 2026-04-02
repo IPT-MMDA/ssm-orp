@@ -9,7 +9,8 @@ import torch.nn as nn
 import torch.optim as optim
 
 from ssm_sharing.models import SequenceClassifier, StandardMamba, SharedMamba
-from ssm_sharing.dataset import get_synthetic_dataloader, DataLoader
+from ssm_sharing.dataset import get_synthetic_dataloaders, get_listops_dataloaders, DataLoader
+from ssm_sharing.evaluate import Perturbator, Evaluator
 
 available_models = {"standard": StandardMamba,"shared": SharedMamba}
 
@@ -17,25 +18,32 @@ available_models = {"standard": StandardMamba,"shared": SharedMamba}
 def parse_args():
     parser = argparse.ArgumentParser(description="Train Mamba model for Sequence Classification")
     
+    choices = list(available_models.keys())
+    parser.add_argument("--model", type=str, default="", choices=choices, help="Mamba model type")  #choices[0]
+
     parser.add_argument("--epochs", type=int, default=10, help="Amount of epochs")
     parser.add_argument("--batch-size", type=int, default=32, help="Batch size for DataLoader")
     parser.add_argument("--d-model", type=int, default=128, help="Dimension of secret state (d_model)")
     parser.add_argument("--lr", type=float, default=1e-3, help="Learning rate for optimizator")
-    choices = list(available_models.keys())
-    parser.add_argument("--model", type=str, default="", choices=choices, help="Mamba model type")  #choices[0]
+
+    parser.add_argument("--samples", type=int, default=1000, help="Amount of samples generated")
+    parser.add_argument("--sequence-length", type=int, default=64, help="Length of sequence")
+    parser.add_argument("--layers", type=int, default=6, help="Amount of layers in mamba")
+    parser.add_argument("--classes", type=int, default=2, help="Amount of classes to classify")
+    parser.add_argument("--split", type=float, default=0.8, help="Split percentage of train/test")
 
     parser.add_argument("--no-save", action="store_true", help="Don't save the final model")
     parser.add_argument("--save-iters", action="store_true", help="Save at the end of each epoch")
     
     return parser.parse_args()
 
-def train(dataloader: DataLoader, mamba: nn.Module, args: argparse.Namespace, num_classes: int, device: torch.device):
+def train(train_dataloader: DataLoader, test_dataloader: DataLoader, mamba: nn.Module, args: argparse.Namespace, device: torch.device):
     dir_name = "models_saved"
     if args.save_iters or not args.no_save: 
         os.makedirs(dir_name, exist_ok=True)
     start = time.time()
 
-    model = SequenceClassifier(ssm_model=mamba, d_model=args.d_model, num_classes=num_classes)
+    model = SequenceClassifier(ssm_model=mamba, d_model=args.d_model, num_classes=args.classes)
     model.to(device)
 
     criterion = nn.CrossEntropyLoss()
@@ -50,7 +58,7 @@ def train(dataloader: DataLoader, mamba: nn.Module, args: argparse.Namespace, nu
         total_correct = 0
         total_samples = 0
 
-        for batch_idx, (X, y) in enumerate(dataloader):
+        for batch_idx, (X, y) in enumerate(train_dataloader):
             X, y = X.to(device), y.to(device)
 
             optimizer.zero_grad()
@@ -71,13 +79,16 @@ def train(dataloader: DataLoader, mamba: nn.Module, args: argparse.Namespace, nu
 
             total_loss += loss.item()
 
-        scheduler.step()
+        acc_mean, interval = Evaluator.run_stress_test(model, test_dataloader, device, Perturbator.apply_nothing, n_runs=10)
 
-        avg_loss = total_loss / len(dataloader)
+        avg_loss = total_loss / len(train_dataloader)
 
+        time_took = time.time() - start_
         pad = len(str(args.epochs))
         epochs = str(epoch+1).zfill(pad)
-        print(f"[Time] {time.time() - start_:.2f}s | [Epochs] [{epochs}/{args.epochs}] | [Current LR] {scheduler.get_last_lr()[0]:.6f} | [Loss] {avg_loss:.8f} | [Accuracy] {total_correct/total_samples}")
+        print(f"[Time] {time_took:.2f}s\n[Epochs] [{epochs}/{args.epochs}] | [Current LR] {scheduler.get_last_lr()[0]:.6f}\n[Loss Train] {avg_loss:.8f} | [Accuracy Train] {total_correct/total_samples:.2f} | [Accuracy Test] {acc_mean:.2f}\n")
+
+        scheduler.step()
 
         if args.save_iters:
             torch.save(model.state_dict(), f"{dir_name}/{mamba._get_name()}_e{epochs}_l{avg_loss:.8f}.pt")
@@ -91,25 +102,41 @@ def train(dataloader: DataLoader, mamba: nn.Module, args: argparse.Namespace, nu
 
     del model
     torch.cuda.empty_cache()
+    return time_took
 
-def train_launch(mamba: nn.Module, args: argparse.Namespace, n_layers: int, num_classes: int, device: torch.device):
-    dataloader = get_synthetic_dataloader(d_model=args.d_model, batch_size=args.batch_size, num_classes=num_classes)
-    train(dataloader, mamba(d_model=args.d_model, n_layers=n_layers), args, num_classes, device)
+def train_launch(mamba: nn.Module, args: argparse.Namespace, device: torch.device):
+    train_loader, test_loader = get_synthetic_dataloaders(
+        num_samples=args.samples, 
+        seq_len=args.sequence_length,
+        d_model=args.d_model,
+        num_classes=args.classes,
+        batch_size=args.batch_size,
+        train_split=args.split
+    )
+
+    # train_loader, test_loader = get_listops_dataloaders(
+    #     num_samples=args.samples, 
+    #     seq_len=args.sequence_length,
+    #     batch_size=args.batch_size,
+    #     train_split=args.split
+    # )
+    train(
+        train_loader, test_loader,
+        mamba(d_model=args.d_model, n_layers=args.layers), args, device
+    )
 
 def train_command():
     # feat: add training loop with AdamW, CrossEntropyLoss and CosineAnnealingLR
     args = parse_args()
-    num_classes = 2
-    n_layers = 6
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     mamba = available_models.get(args.model)
     if mamba is not None:
-        train_launch(mamba, args, n_layers, num_classes, device)
+        train_launch(mamba, args, device)
     else:
         for mamba in available_models.values():
-            train_launch(mamba, args, n_layers, num_classes, device)
+            train_launch(mamba, args, device)
 
 
 if __name__ == "__main__":
