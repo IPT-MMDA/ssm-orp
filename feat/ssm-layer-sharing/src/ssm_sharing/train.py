@@ -23,15 +23,16 @@ def parse_args():
     parser.add_argument("--lr", type=float, default=1e-3, help="Learning rate for optimizator")
     choices = list(available_models.keys())
     parser.add_argument("--model", type=str, default="", choices=choices, help="Mamba model type")  #choices[0]
-    parser.add_argument("--save", type=bool, default=True, help="Save at the end of training")
-    parser.add_argument("--save-on-iteration", type=bool, default=False, help="Save at the end of each epoch of training")
+
+    parser.add_argument("--no-save", action="store_true", help="Don't save the final model")
+    parser.add_argument("--save-iters", action="store_true", help="Save at the end of each epoch")
     
     return parser.parse_args()
 
 def train(dataloader: DataLoader, mamba: nn.Module, args: argparse.Namespace, num_classes: int, device: torch.device):
     dir_name = "models_saved"
-    if args.save_on_iteration or args.save: 
-        if not os.path.exists(dir_name): os.mkdir(dir_name)
+    if args.save_iters or not args.no_save: 
+        os.makedirs(dir_name, exist_ok=True)
     start = time.time()
 
     model = SequenceClassifier(ssm_model=mamba, d_model=args.d_model, num_classes=num_classes)
@@ -55,6 +56,12 @@ def train(dataloader: DataLoader, mamba: nn.Module, args: argparse.Namespace, nu
             optimizer.zero_grad()
 
             logits = model(X)
+            preds = torch.argmax(logits, dim=1)
+            correct = (preds == y).sum().item()
+
+            total_correct += correct
+            total_samples += y.size(0)
+
             loss = criterion(logits, y)
             loss.backward()
 
@@ -62,12 +69,7 @@ def train(dataloader: DataLoader, mamba: nn.Module, args: argparse.Namespace, nu
 
             optimizer.step()
 
-            preds = torch.argmax(logits, dim=1)
-            correct = (preds == y).sum().item()
-
-            total_correct += correct
             total_loss += loss.item()
-            total_samples += y.size(0)
 
         scheduler.step()
 
@@ -76,12 +78,13 @@ def train(dataloader: DataLoader, mamba: nn.Module, args: argparse.Namespace, nu
         pad = len(str(args.epochs))
         epochs = str(epoch+1).zfill(pad)
         print(f"[Time] {time.time() - start_:.2f}s | [Epochs] [{epochs}/{args.epochs}] | [Current LR] {scheduler.get_last_lr()[0]:.6f} | [Loss] {avg_loss:.8f} | [Accuracy] {total_correct/total_samples}")
-        if args.save_on_iteration:
+
+        if args.save_iters:
             torch.save(model.state_dict(), f"{dir_name}/{mamba._get_name()}_e{epochs}_l{avg_loss:.8f}.pt")
 
     print(f"\n[Train Finished] {time.time() - start:.2f}s\n")
 
-    if args.save:
+    if not args.no_save:
         path = f"{dir_name}/{mamba._get_name()}.pt"
         print(f"[Saved] {path}")
         torch.save(model.state_dict(), path)
