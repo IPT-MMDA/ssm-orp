@@ -32,16 +32,16 @@ pip install -e .[dev]
 
 ***
 
-### Training
+### Commands
 
 ```bash
+# Train
 train
 ```
 
-Get help
-
 ```bash
-train --help
+# Get help for command
+command --help
 ```
 
 ## My Task
