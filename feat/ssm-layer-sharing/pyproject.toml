@@ -20,17 +20,17 @@ dependencies = [
     "matplotlib",
 
     "torch",
-    "torchaudio",
-    "einops",
+    "torchvision",
+    # "torchaudio",
+    # "einops",
     "mamba-ssm",
-    "causal-conv1d"
+    # "causal-conv1d"
 ]
 
 [project.optional-dependencies]
 dev = [
     "pytest",
-    "pytest-benchmark",
-    "matplotlib"
+    "pytest-benchmark"
 ]
 
 [project.urls]
