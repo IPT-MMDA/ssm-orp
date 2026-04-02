@@ -2,20 +2,19 @@ import torch
 import torch.nn as nn
 
 
-# 1. Задача (Classification Task)
-# Наші моделі зараз видають тензор форми (B, L, d_model). Тобі треба:
-# Написати клас-обгортку SequenceClassifier(ssm_model, num_classes), яка приймає нашу Mamba (Shared або Standard).
-# У forward зробити усереднення по часу (Mean Pooling): x.mean(dim=1).
-# Пропустити результат через nn.Linear(d_model, num_classes).
-
-# feat: add SequenceClassifier wrapper model for mamba models
 class SequenceClassifier(nn.Module):
-    def __init__(self, ssm_model: nn.Module, d_model: int, num_classes: int):
+    def __init__(self, ssm_model: nn.Module, d_model: int, num_classes: int, vocab_size: int = None):
         super().__init__()
+        self.embedding = nn.Embedding(vocab_size, d_model) if vocab_size else None
         self.ssm_model = ssm_model
         self.head = nn.Linear(d_model, num_classes)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """
+        x: (batch_size, sequence_length) | (batch_size, sequence_length, d_model)
+        """
+        if self.embedding is not None and x.dtype == torch.long:
+            x = self.embedding(x)  # b s -> b s d
         out = self.ssm_model(x)  # b s d -> b s d
         pooled = out.mean(dim=1)  # Mean Pooling: b s d -> b d
         logits = self.head(pooled)  # b d -> b n
