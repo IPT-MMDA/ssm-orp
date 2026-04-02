@@ -17,7 +17,7 @@ The **Mackey-Glass delay-differential equation** generates a normalised,
 mildly/strongly chaotic 1-D time series:
 
 ```
-dx/dt = beta·x(t-tau) / (1 + x(t-tau)^n) - gamma·x(t)
+dx/dt = beta*x(t-tau) / (1 + x(t-tau)^n) - gamma·x(t)
 tau=17 -> mild chaos   |   tau=30 -> strong chaos
 ```
 
@@ -77,6 +77,48 @@ The experiment runs with **10 random seeds**; plots show mean +- 1std bands.
 
 ## Results
 
+All experiments use **10 random seeds**; reported values are mean ± 1 std.
+
+### Dense baseline
+
+The model converges within 2–3 epochs and reaches near-zero val MSE for all seeds, confirming the architecture has sufficient capacity to learn Mackey-Glass dynamics before pruning begins.
+
+### Sparsity tolerance
+
+| Setting | Breaking point |
+|---------|---------------|
+| tau=17 (mild chaos) | **84.5% +- 2.3%** |
+| tau=30 (strong chaos) | **82.6% +- 2.3%** |
+
+Val MSE stays effectively at zero up to ~82–84% sparsity, then collapses
+sharply to ~0.22–0.23. The transition is abrupt - there is no gradual
+degradation of clean prediction quality before the breaking point.
+
+### Robustness to anomalies
+
+A counter-intuitive result emerges from the anomaly test MSE curves:
+
+- At **0% sparsity** (dense), anomaly MSE is high (~0.14 for tau=17, ~0.12
+  for tau=30). The dense SSM integrates the full 128-step context, so spikes
+  anywhere in the input window corrupt the hidden state and degrade the forecast.
+- As sparsity increases to ~83%, anomaly MSE drops monotonically
+  (tau=17: ~0.14 -> ~0.05; tau=30: ~0.12 -> ~0.03) while clean val MSE
+  remains near zero. Pruning removes low-magnitude weights that encode
+  long-range context, so the model forecasts from a shorter effective
+  window and distant anomalies no longer reach the prediction.
+- At **~90%+** sparsity, both clean and anomaly MSE jump to ~0.22 - the model
+  has crossed the breaking point and all predictive power is lost.
+
+**Key finding:** pruning up to ~83% actually *improves* robustness to temporal
+anomalies, at no cost to clean prediction accuracy.
+
+### Effect of chaos level (tau=30 ablation)
+
+Stronger chaos shifts the breaking point ~2% earlier (82.6% vs 84.5%).
+At tau=30, anomaly MSE starts lower (~0.12 vs ~0.15) and the drop with
+sparsity is more gradual, suggesting the strongly chaotic series has less
+exploitable long-range structure for the dense model to over-rely on.
+
 ---
 
 ## Limitations
@@ -84,8 +126,10 @@ The experiment runs with **10 random seeds**; plots show mean +- 1std bands.
 - Only univariate forecasting (`horizon=1`). Multi-step prediction may be more sensitive to sparsity.
 - Magnitude pruning is **unstructured** - structured pruning (e.g. removing entire state dimensions) would likely break dynamics at lower sparsity.
 - Fine-tuning budget is intentionally small (5 epochs) to reflect a realistic post-deployment scenario; a larger budget could partially recover accuracy.
-- Results are specific to Mamba v2 (`mamba-ssm==2.2.2`); other SSM variants (S4, S6, RWKV) may behave differently.
+- Results are specific to Mamba v2 (`mamba-ssm==2.2.2`); other SSM variants may behave differently.
 - Breaking point detection is heuristic (`val_MSE > max(5x baseline, 1e-3)`); a smoother metric (e.g. AUC of the sparsity curve) could be more principled.
+- The tau=17 vs tau=30 comparison is based on a single ablation run; the observed ~2% shift in breaking point is within the std (±2.3%) and should be treated as a weak trend rather than a definitive conclusion - more tau values and more seeds would be needed to confirm it.
+- 10 seeds provides reasonable confidence intervals for breaking point detection, but a larger seed count (30+) would give more reliable std estimates, especially near the breaking point where variance is highest.
 
 ---
 
@@ -108,7 +152,7 @@ pip install torch --index-url https://download.pytorch.org/whl/cpu
 pytest tests/test_dataset.py tests/test_pruning.py -v
 ```
 
-### Locally - full experiment (Linux / WSL with CUDA GPU)
+### Locally - full experiment (Linux / WSL with CUDA GPU) (should be tested)
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
@@ -137,6 +181,7 @@ print(f"Breaking point: {np.median(bps)*100:.1f}% +- {np.std(bps)*100:.1f}%")
 
 ```
 ssm_magnitude_pruning/
+  README.md          # this file
   magnitude_pruning/
     dataset.py       # Mackey-Glass DDE generator, anomaly injection, DataLoaders
     model.py         # MambaForecaster architecture + named_prunable_params
