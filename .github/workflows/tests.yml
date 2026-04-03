@@ -1,13 +1,14 @@
-name: Run tests
+name: Tests
 
 on:
   push:
-    branches:
-      - feat/sparse-ssm
-      - master
+    branches: [main]
+    paths:
+      - "sparse-ssm/**"
   pull_request:
-    branches:
-      - master
+    branches: [main]
+    paths:
+      - "sparse-ssm/**"
 
 jobs:
   test:
@@ -28,8 +29,12 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -e .
-          pip install pytest
+          # Install CPU-only PyTorch (no CUDA needed for tests)
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          # Install other test dependencies (skip mamba-ssm & causal-conv1d — they need CUDA)
+          pip install transformers tqdm numpy accelerate datasets pytest
+          # Install the package itself without pulling its dependencies again
+          pip install --no-deps -e .
 
       - name: Run tests
-        run: pytest tests -v
+        run: python -m pytest tests/ -v
