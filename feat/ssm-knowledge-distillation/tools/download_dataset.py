@@ -77,8 +77,9 @@ def download_dataset():
     ARCHIVE_PATH.unlink()
     print("Removed archive file.")
     print("Done!")
-    input("Press Enter to exit the programm")
+    
 
 
 if __name__ == "__main__":
     download_dataset()
+    input("Press Enter to exit the programm")
