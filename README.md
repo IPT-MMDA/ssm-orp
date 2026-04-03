@@ -1,21 +1,67 @@
-# How to use this repo?
+## Дослідження стійкості архітектури ResNet та MDEQна датасеті CIFAR-10
 
-1. Check the task you have selected as your assignemnt
-2. Ensure that you understand the task correctly and contanct your lecturer in the case you need any help
-3. Conduct the research in question to complete the task
-4. Create a pull request to the main/master repo
+### Install and start:
+#### Після клонування створюємо середоще:
+1. python -m venv .venv
+#### Активація (Linux/Mac/WSL)
+2. source .venv/bin/activate
+#### Встановлення залежностей
+3. pip install .
+#### Запуск оцінки
+4. python evaluate.py
+#### Запуск із нуля (починаючи із train models)
+5. python train.py
 
-#### IMPORTANT: Make sure that your code and results are of good quality: your code should be reasonably fast, should use confidence intervals and whatnot to confirm the reliability of the findings
------------
-#### IMPORTANT: Make your code concise, no need for docker/mlflow/etc infrastructure
------------
-#### IMPORTANT: Make your code easy to read, don't be afraid of lengthy comments if needed
------------
-#### IMPORTANT: Add tests, help others ensure that the code in the PR runs as intended
------------
-#### IMPORTANT: Add readme inside your PRs, explaining what was done in detail; make sure to cover your goal, limitations and results
------------
-#### IMPORTANT: Use pyproject.toml + pip for dependency management, assume .venv environment
------------
-#### IMPORTANT: Assume Linux-ish compatibility (runnable on most common distros and WSL)
------------
+### Мета
+
+Метою дослідження є порівняльний аналіз класичної згорткової нейронної мережі (ResNet) та моделі глибокої рівноваги (Deep Equilibrium Model — MDEQ). 
+Основна увага приділяється їхній здатності протистояти:
+
+**Природним пошкодженням даних** (Gaussian Noise, Defocus Blur).
+
+**Суперечливим (adversarial) атакам** (FGSM, PGD).
+
+
+### Використані архітектури:
+**BalancedResNet:** 
+Класична архітектура з фіксованою кількістю шарів (4 блоки), що використовується, як baseline.
+
+**MDEQ_Small:** 
+Модель, що базується на пошуку фіксованої точки ітераційним сольвером (Broyden).
+Вона використовує ітераційний підхід замість глибокого стеку шарів пропускаючи зберігання та обчислення проміжних станів кожного шару.
+Використовується Т. про неявну функцію **(Implicit Function Theorem)**
+
+
+### Результат:
+#### Результат evaluation у ***evaluate_pipeline_AD.ipynb***
+
+#### **1. Аналіз стійкості до Gaussian Noise (Етап 1)**
+ResNet: Демонструє стрімке падіння точності.
+Між 1-м та 5-м рівнями severity точність падає на 51.75% (з 0.8153 до 0.2978).
+Висока чутливість класичних CNN до високочастотного шуму.
+
+MDEQ: Показує значно вищу стабільність.
+Падіння точності за аналогічний період становить лише 28.81% (з 0.6418 до 0.3537).
+
+sev=4 Моделі зрівнялись, а на sev=5 MDEQ випереджає ResNet на 5.59%.
+
+
+#### **2. Стійкість до Defocus Blur (Етап 2)**
+**Sev=3:**
+
+ResNet (0.1872) фактично втрачає здатність до класифікації, наближаючись до рівня випадкового вгадування на складних викривленнях.
+
+MDEQ (0.2425) утримує перевагу в 5.53% над ResNet.
+
+Адже blur видаляє дрібні деталі зображення. А для ResNet через ту що вона покладається на локальні текстуальні ознаки
+
+#### **3.Поведінка сольвера та внутрішні метрики MDEQ**
+
+**Стабільність обчислень:**
+Кількість ітерацій (Avg Iters) залишається майже незмінною (37.9 при низькому шумі та 36.8 при критичному).
+Це означає, що пошкодження даних не призводять до divergence мат. апарату моделі.
+
+**Адаптивність через помилку:**
+Поступове зростання Avg Residual (з 9.62 до 11.84) при посиленні шуму.
+Це вказує на те, що сольверу стає дещо складніше знайти ідеальну фіксовану точку,
+але він все одно знаходить стабільний стан, який забезпечує кращу класифікацію, ніж ResNet.
