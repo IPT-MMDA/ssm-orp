@@ -20,20 +20,31 @@ SAMPLE_RATE = 16000
 MAX_LENGTH = 16000
 
 
+CACHE_DIR = PROJECT_DIR / "dataset"
+
+
 class SpeechCommandsDataset(Dataset):
     def __init__(self, split="training"):
-        self.samples = []
-        self.labels = []
         self.class_names = sorted([
             d.name for d in DATASET_DIR.iterdir()
             if d.is_dir() and d.name not in EXCLUDED_DIRS
         ])
         self.class_to_idx = {name: i for i, name in enumerate(self.class_names)}
 
-        #Load official validation/test lists
+        cache_path = CACHE_DIR / (split + ".pt")
+        if cache_path.exists():
+            print("Loading", split, "from cache ...")
+            cache = torch.load(cache_path, weights_only=True)
+            self.audios = cache["audios"]
+            self.labels = cache["labels"]
+            return
+
         val_list = self._load_list("validation_list.txt")
         test_list = self._load_list("testing_list.txt")
 
+        #collect file paths first
+        paths = []
+        labels = []
         for class_name in self.class_names:
             class_dir = DATASET_DIR / class_name
             for wav_file in class_dir.glob("*.wav"):
@@ -44,8 +55,21 @@ class SpeechCommandsDataset(Dataset):
                     continue
                 if split == "training" and (rel_path in val_list or rel_path in test_list):
                     continue
-                self.samples.append(wav_file)
-                self.labels.append(self.class_to_idx[class_name])
+                paths.append(wav_file)
+                labels.append(self.class_to_idx[class_name])
+
+        #preload all audio into RAM
+        print("Loading", split, "split from wav files ...")
+        self.audios = torch.zeros(len(paths), MAX_LENGTH)
+        self.labels = torch.tensor(labels, dtype=torch.long)
+        for i, path in enumerate(tqdm(paths, desc=split)):
+            audio, sr = sf.read(path, dtype="float32")
+            length = min(len(audio), MAX_LENGTH)
+            self.audios[i, :length] = torch.from_numpy(audio[:length])
+
+        #save cache for next time
+        print("Saving", split, "cache to", cache_path)
+        torch.save({"audios": self.audios, "labels": self.labels}, cache_path)
 
     def _load_list(self, filename):
         list_path = DATASET_DIR / filename
@@ -55,16 +79,10 @@ class SpeechCommandsDataset(Dataset):
             return set(line.strip() for line in f)
 
     def __len__(self):
-        return len(self.samples)
+        return len(self.labels)
 
     def __getitem__(self, idx):
-        audio, sr = sf.read(self.samples[idx], dtype="float32")
-        #Pad or trim to MAX_LENGTH
-        if len(audio) < MAX_LENGTH:
-            audio = np.pad(audio, (0, MAX_LENGTH - len(audio)))
-        else:
-            audio = audio[:MAX_LENGTH]
-        return torch.tensor(audio), self.labels[idx]
+        return self.audios[idx], self.labels[idx]
 
 
 scaler = torch.amp.GradScaler()
