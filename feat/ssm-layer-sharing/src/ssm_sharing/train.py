@@ -1,7 +1,5 @@
 import time
-# start = time.time()
 
-import argparse
 import os
 
 from tqdm import tqdm
@@ -10,70 +8,21 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
-from ssm_sharing.models import SequenceClassifier, StandardMamba, SharedMamba
-from ssm_sharing.dataset import get_synthetic_dataloaders, get_listops_dataloaders, get_mnist_dataloaders, DataLoader
+from ssm_sharing.models import SequenceClassifier
+from ssm_sharing.dataset import DataLoader
 from ssm_sharing.evaluate import Perturbator, Evaluator
 
-available_models = {"standard": StandardMamba,"shared": SharedMamba}
-available_perturbations = {"nothing": Perturbator.apply_nothing, "masking": Perturbator.apply_masking, "noise": Perturbator.apply_gaussian_noise}
-available_generators = {"synthetic": get_synthetic_dataloaders, "listops": get_listops_dataloaders, "mnist": get_mnist_dataloaders}
+from ssm_sharing.utils import argparse, parse_args, AVAILABLE_MODELS, AVAILABLE_PERTURBATIONS, AVAILABLE_GENERATORS
 
-
-def parse_args():
-    parser = argparse.ArgumentParser(description="Train Mamba model for Sequence Classification")
-    
-    models = list(available_models.keys())
-    perturbations = list(available_perturbations.keys())
-    generators = list(available_generators.keys())
-    parser.add_argument("--model", type=str, default=None, choices=models, help="Mamba model type")  #models[0]
-    parser.add_argument("--perturbation", type=str, default=perturbations[0], choices=perturbations, help="Evaluate with perturbation function")
-    parser.add_argument("--dataset", type=str, default=generators[0], choices=generators, help="Dataset to train on")
-
-    parser.add_argument("--epochs", type=int, default=10, help="Amount of epochs")
-    parser.add_argument("--batch-size", type=int, default=32, help="Batch size for DataLoader")
-    parser.add_argument("--d-model", type=int, default=128, help="Dimension of secret state (d_model)")
-    parser.add_argument("--lr", type=float, default=1e-3, help="Learning rate for optimizator")
-
-    parser.add_argument("--samples", type=int, default=1000, help="Amount of samples generated")
-    parser.add_argument("--sequence-length", type=int, default=64, help="Length of sequence")
-    parser.add_argument("--layers", type=int, default=6, help="Amount of layers in mamba")
-    parser.add_argument("--classes", type=int, default=None, help="Amount of classes to classify")
-    parser.add_argument("--split", type=float, default=0.8, help="Split percentage of train/test")
-    parser.add_argument("--mask", type=float, default=0.2, help="Parameter for perturbartions")
-    parser.add_argument("--runs", type=int, default=10, help="Amount of runs in final evaluation")
-
-    parser.add_argument("--vocab-size", type=int, default=None, help="Size of alphabet")
-    parser.add_argument("--input-dim", type=int, default=None, help="Dimenions of dataset (mnist)")
-
-    parser.add_argument("--no-save", action="store_true", help="Don't save the final model")
-    parser.add_argument("--save-iters", action="store_true", help="Save at the end of each epoch")
-
-    parser.add_argument("--checkpoint", type=str, default=None, help="Path to model checkpoint")
-    parser.add_argument("--eval-only", action="store_true", help="Only run evaluation")
-
-    args = parser.parse_args()
-
-    if args.dataset == "mnist":
-        if args.input_dim is None or args.classes is None:
-            parser.error(
-                "\n[Error] For '--dataset mnist', you MUST specify:\n"
-                "  --input-dim (e.g., 1)\n"
-                "  --classes (e.g., 10)"
-            )
-            
-    elif args.dataset == "listops":
-        if args.vocab_size is None:
-            parser.error(
-                "\n[Error] For '--dataset listops', you MUST specify:\n"
-                "  --vocab-size (e.g., 11)"
-            )
-
-    if args.classes is None:
-        args.classes = 2
-
-    return args
 
 def train(train_dataloader: DataLoader, test_dataloader: DataLoader, mamba: nn.Module, args: argparse.Namespace, device: torch.device):
+    """
+    Main function for training
+
+    Creates folders for models (if needed).
+    Creates or loads model and evals or starts training it using `CrossEntropyLoss`, optimizer `AdamW` and lr_scheduler `CosineAnnealingLR`.
+    Saves model in the end and/or on each epoch.
+    """
     pad = len(str(args.epochs))
     dir_name = "models_saved"
     if args.save_iters or not args.no_save: 
@@ -88,7 +37,7 @@ def train(train_dataloader: DataLoader, test_dataloader: DataLoader, mamba: nn.M
         model.load_state_dict(torch.load(args.checkpoint, map_location=device))
 
     if args.eval_only:
-        acc_mean, interval = Evaluator.run_stress_test(model, test_dataloader, device, available_perturbations.get(args.perturbation, Perturbator.apply_nothing), args.mask, n_runs=args.runs)
+        acc_mean, interval = Evaluator.run_stress_test(model, test_dataloader, device, AVAILABLE_PERTURBATIONS.get(args.perturbation, Perturbator.apply_nothing), args.mask, n_runs=args.runs)
         print(f"[Evaluation] Accuracy: {acc_mean:.5} | Interval: {interval}")
         return 0
 
@@ -130,9 +79,9 @@ def train(train_dataloader: DataLoader, test_dataloader: DataLoader, mamba: nn.M
             pbar.set_postfix({"Loss": f"{loss.item():.4f}"})
 
         if epoch == args.epochs - 1:
-            acc_mean, interval = Evaluator.run_stress_test(model, test_dataloader, device, available_perturbations.get(args.perturbation, Perturbator.apply_nothing), args.mask, n_runs=args.runs)
+            acc_mean, interval = Evaluator.run_stress_test(model, test_dataloader, device, AVAILABLE_PERTURBATIONS.get(args.perturbation, Perturbator.apply_nothing), args.mask, n_runs=args.runs)
         else:
-            acc_mean, interval = Evaluator.run_stress_test(model, test_dataloader, device, available_perturbations.get(args.perturbation, Perturbator.apply_nothing), args.mask, n_runs=2)
+            acc_mean, interval = Evaluator.run_stress_test(model, test_dataloader, device, AVAILABLE_PERTURBATIONS.get(args.perturbation, Perturbator.apply_nothing), args.mask, n_runs=2)
         avg_loss = total_loss / len(train_dataloader)
 
         time_took = time.time() - start_
@@ -156,7 +105,13 @@ def train(train_dataloader: DataLoader, test_dataloader: DataLoader, mamba: nn.M
     return time_took
 
 def train_launch(mamba: nn.Module, args: argparse.Namespace, device: torch.device):
-    train_loader, test_loader = available_generators[args.dataset](
+    """
+    Called from `train_command`
+
+    Creates train and test dataset loaders from args.
+    Starts train of `SequenceClassifier`.
+    """
+    train_loader, test_loader = AVAILABLE_GENERATORS[args.dataset](
         num_samples=args.samples, 
         seq_len=args.sequence_length,
         d_model=args.d_model,
@@ -171,18 +126,20 @@ def train_launch(mamba: nn.Module, args: argparse.Namespace, device: torch.devic
     )
 
 def train_command():
-    # feat: add training loop with AdamW, CrossEntropyLoss and CosineAnnealingLR
+    """
+    Used when tou type in terminal `train`
+
+    Parses argumets given with train.
+    Automaticaly decides which device to use.
+    Starts train for needed model.
+    """
     args = parse_args()
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    mamba = available_models.get(args.model)
+    mamba = AVAILABLE_MODELS.get(args.model)
     if mamba is not None:
         train_launch(mamba, args, device)
     else:
-        for mamba in available_models.values():
+        for mamba in AVAILABLE_MODELS.values():
             train_launch(mamba, args, device)
-
-
-if __name__ == "__main__":
-    train_command()
