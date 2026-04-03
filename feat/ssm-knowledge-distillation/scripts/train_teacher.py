@@ -67,6 +67,9 @@ class SpeechCommandsDataset(Dataset):
         return torch.tensor(audio), self.labels[idx]
 
 
+scaler = torch.amp.GradScaler()
+
+
 def train_one_epoch(model, loader, optimizer, criterion, device):
     model.train()
     total_loss = 0
@@ -78,10 +81,12 @@ def train_one_epoch(model, loader, optimizer, criterion, device):
         labels = labels.to(device)
 
         optimizer.zero_grad()
-        logits = model(audio)
-        loss = criterion(logits, labels)
-        loss.backward()
-        optimizer.step()
+        with torch.amp.autocast("cuda"):
+            logits = model(audio)
+            loss = criterion(logits, labels)
+        scaler.scale(loss).backward()
+        scaler.step(optimizer)
+        scaler.update()
 
         total_loss += loss.item() * audio.size(0)
         correct += (logits.argmax(dim=1) == labels).sum().item()
@@ -101,8 +106,9 @@ def evaluate(model, loader, criterion, device):
             audio = audio.to(device)
             labels = labels.to(device)
 
-            logits = model(audio)
-            loss = criterion(logits, labels)
+            with torch.amp.autocast("cuda"):
+                logits = model(audio)
+                loss = criterion(logits, labels)
 
             total_loss += loss.item() * audio.size(0)
             correct += (logits.argmax(dim=1) == labels).sum().item()
@@ -122,8 +128,8 @@ def main():
     print("Val samples:", len(val_dataset))
     print("Classes:", len(train_dataset.class_names))
 
-    train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=4, pin_memory=True)
-    val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False, num_workers=4, pin_memory=True)
+    train_loader = DataLoader(train_dataset, batch_size=128, shuffle=True, num_workers=0, pin_memory=True)
+    val_loader = DataLoader(val_dataset, batch_size=128, shuffle=False, num_workers=0, pin_memory=True)
 
     #Model
     model = TeacherSSM(n_classes=len(train_dataset.class_names)).to(device)

@@ -4,9 +4,9 @@ from mamba_ssm import Mamba
 
 
 class TeacherSSM(nn.Module):
-    def __init__(self, n_classes=35, d_model=128, n_layers=8, d_state=16, d_conv=4, expand=2, stride=4):
+    def __init__(self, n_classes=35, d_model=128, n_layers=6, d_state=16, d_conv=4, expand=2, stride=16):
         super().__init__()
-        #strided conv to compress 16k -> 4k steps
+        #strided conv to compress 16k -> 1k steps
         self.projection = nn.Conv1d(1, d_model, kernel_size=stride, stride=stride)
 
         self.layers = nn.ModuleList([
@@ -22,8 +22,8 @@ class TeacherSSM(nn.Module):
     def forward(self, x):
         #x: (batch, 16000)
         x = x.unsqueeze(1)                #(batch, 1, 16000)
-        x = self.projection(x)            #(batch, d_model, 4000)
-        x = x.transpose(1, 2)             #(batch, 4000, d_model)
+        x = self.projection(x)            #(batch, d_model, 1000)
+        x = x.transpose(1, 2)             #(batch, 1000, d_model)
 
         for norm, layer in zip(self.norms, self.layers):
             x = x + layer(norm(x))  #pre-norm residual
