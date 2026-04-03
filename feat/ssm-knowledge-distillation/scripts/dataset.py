@@ -27,10 +27,15 @@ class SpeechCommandsDataset(Dataset):
         cache_path = CACHE_DIR / (split + ".pt")
         if cache_path.exists():
             print("Loading", split, "from cache ...")
-            cache = torch.load(cache_path, weights_only=True)
-            self.audios = cache["audios"]
-            self.labels = cache["labels"]
-            return
+            try:
+                cache = torch.load(cache_path, weights_only=True)
+                self.audios = cache["audios"]
+                self.labels = cache["labels"]
+                return
+            except Exception as e:
+                print("Cache corrupted:", e)
+                print("Deleting and rebuilding ...")
+                cache_path.unlink()
 
         val_list = self._load_list("validation_list.txt")
         test_list = self._load_list("testing_list.txt")
