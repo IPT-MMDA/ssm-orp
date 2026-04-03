@@ -146,9 +146,6 @@ def run_single_config(kd_train_loader, val_loader, n_classes, temperature, alpha
     epochs = 10
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=epochs)
 
-    best_val_acc = 0
-    best_val_f1 = 0
-
     epoch_bar.reset(total=epochs)
     epoch_bar.set_description("T=" + str(temperature) + " a=" + str(alpha) + " s=" + str(seed))
 
@@ -156,21 +153,18 @@ def run_single_config(kd_train_loader, val_loader, n_classes, temperature, alpha
         train_loss, train_acc = train_one_epoch(
             student, kd_train_loader, optimizer, temperature, alpha, device
         )
-        val_acc, val_f1 = evaluate(student, val_loader, device)
         scheduler.step()
-
-        if val_acc > best_val_acc:
-            best_val_acc = val_acc
-            best_val_f1 = val_f1
-
-        epoch_bar.set_postfix(acc=round(best_val_acc, 4), f1=round(best_val_f1, 4))
+        epoch_bar.set_postfix(loss=round(train_loss, 4), acc=round(train_acc, 4))
         epoch_bar.update(1)
+
+    #evaluate once at the end
+    val_acc, val_f1 = evaluate(student, val_loader, device)
 
     #save final model
     model_name = "student_T" + str(temperature) + "_a" + str(alpha) + "_s" + str(seed) + ".pt"
     torch.save(student.state_dict(), MODEL_DIR / model_name)
 
-    return best_val_acc, best_val_f1
+    return val_acc, val_f1
 
 
 def main():
@@ -185,8 +179,8 @@ def main():
     print("Val samples:", len(val_dataset))
     print("Classes:", n_classes)
 
-    train_loader = DataLoader(train_dataset, batch_size=256, shuffle=True, num_workers=0, pin_memory=True)
-    val_loader = DataLoader(val_dataset, batch_size=256, shuffle=False, num_workers=0, pin_memory=True)
+    train_loader = DataLoader(train_dataset, batch_size=1024, shuffle=True, num_workers=0, pin_memory=True)
+    val_loader = DataLoader(val_dataset, batch_size=1024, shuffle=False, num_workers=0, pin_memory=True)
 
     #load frozen teacher
     teacher = TeacherSSM(n_classes=n_classes).to(device)
@@ -202,7 +196,7 @@ def main():
 
     #cache teacher logits in dataset order (unshuffled)
     print("Caching teacher logits ...")
-    cache_loader = DataLoader(train_dataset, batch_size=256, shuffle=False, num_workers=0, pin_memory=True)
+    cache_loader = DataLoader(train_dataset, batch_size=1024, shuffle=False, num_workers=0, pin_memory=True)
     all_teacher_logits = []
     with torch.no_grad():
         for audio, labels in tqdm(cache_loader, desc="Teacher logits"):
@@ -216,7 +210,7 @@ def main():
 
     #build KD dataloader with cached logits
     kd_dataset = KDDataset(train_dataset, cached_teacher_logits)
-    kd_train_loader = DataLoader(kd_dataset, batch_size=256, shuffle=True, num_workers=0, pin_memory=True)
+    kd_train_loader = DataLoader(kd_dataset, batch_size=1024, shuffle=True, num_workers=0, pin_memory=True)
     MODEL_DIR.mkdir(parents=True, exist_ok=True)
     seeds = [42, 123]
     completed = load_completed_runs()

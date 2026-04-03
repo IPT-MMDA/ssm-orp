@@ -3,9 +3,9 @@ import torch.nn as nn
 from mamba_ssm import Mamba
 
 
-#default difference from teacher is d_model: two times smaller for student (64 vs 128)
+#student is ~8x smaller than teacher: d_model=32 vs 128, 2 layers vs 6
 class StudentSSM(nn.Module):
-    def __init__(self, n_classes=35, d_model=64, n_layers=4, d_state=16, d_conv=4, expand=2, stride=16):
+    def __init__(self, n_classes=35, d_model=32, n_layers=2, d_state=16, d_conv=4, expand=2, stride=16):
         super().__init__()
         #strided conv to compress 16k -> 1k steps
         self.projection = nn.Conv1d(1, d_model, kernel_size=stride, stride=stride)
