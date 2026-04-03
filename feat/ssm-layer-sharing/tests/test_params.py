@@ -2,10 +2,8 @@ import pytest
 import torch
 from ssm_sharing.models import StandardMamba
 from ssm_sharing.models import SharedMamba
+from ssm_sharing.utils import count_parameters
 
-def count_parameters(model: torch.nn.Module) -> int:
-    """Рахує тільки ті параметри, які навчаються."""
-    return sum(p.numel() for p in model.parameters() if p.requires_grad)
 
 def test_baseline_complexity():
     d_model = 128
