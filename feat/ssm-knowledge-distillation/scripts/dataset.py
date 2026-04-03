@@ -65,9 +65,21 @@ class SpeechCommandsDataset(Dataset):
             length = min(len(audio), MAX_LENGTH)
             self.audios[i, :length] = torch.from_numpy(audio[:length])
 
-        #save cache for next time
-        print("Saving", split, "cache to", cache_path)
-        torch.save({"audios": self.audios, "labels": self.labels}, cache_path)
+        #save cache and verify it
+        for attempt in range(3):
+            print("Saving", split, "cache to", cache_path, "(attempt", attempt + 1, "/ 3)")
+            torch.save({"audios": self.audios, "labels": self.labels}, cache_path)
+            try:
+                test_cache = torch.load(cache_path, weights_only=True)
+                del test_cache
+                print("Cache verified OK")
+                break
+            except Exception as e:
+                print("Cache verification failed:", e)
+                if cache_path.exists():
+                    cache_path.unlink()
+                if attempt == 2:
+                    print("Failed to write valid cache after 3 attempts, continuing without cache")
 
     def _load_list(self, filename):
         list_path = DATASET_DIR / filename
