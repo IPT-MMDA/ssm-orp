@@ -61,7 +61,7 @@ class SpeechCommandsDataset(Dataset):
         print("Loading", split, "split from wav files ...")
         self.audios = torch.zeros(len(paths), MAX_LENGTH)
         self.labels = torch.tensor(labels, dtype=torch.long)
-        for i, path in enumerate(tqdm(paths, desc=split)):
+        for i, path in enumerate(tqdm(paths, desc="reading wavs")):
             audio, sr = sf.read(path, dtype="float32")
             length = min(len(audio), MAX_LENGTH)
             self.audios[i, :length] = torch.from_numpy(audio[:length])
