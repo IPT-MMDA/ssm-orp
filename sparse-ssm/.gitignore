@@ -1,0 +1,5 @@
+__pycache__
+.venv
+pruned_mamba
+sparse_ssm_pruning.egg-info
+experiment*
