@@ -7,4 +7,4 @@ build
 
 models_saved
 data
-*.txt
+# *.txt
