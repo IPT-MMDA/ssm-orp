@@ -1,4 +1,5 @@
 import csv
+import sys
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -13,8 +14,21 @@ from dataset import SpeechCommandsDataset, MODEL_DIR
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = SCRIPT_DIR.parent
-CSV_PATH = PROJECT_DIR / "robustness_results.csv"
-DISTILL_CSV = PROJECT_DIR / "distillation_results.csv"
+
+#--small flag switches to small student models
+SMALL_MODE = "--small" in sys.argv
+if SMALL_MODE:
+    STUDENT_MODEL_DIR = MODEL_DIR / "small_students"
+    CSV_PATH = PROJECT_DIR / "robustness_results_small_student.csv"
+    DISTILL_CSV = PROJECT_DIR / "distillation_results_small_student.csv"
+    STUDENT_KWARGS = {"d_model": 32, "n_layers": 2}
+    print("=== SMALL STUDENT MODE ===")
+else:
+    STUDENT_MODEL_DIR = MODEL_DIR
+    CSV_PATH = PROJECT_DIR / "robustness_results_large_student.csv"
+    DISTILL_CSV = PROJECT_DIR / "distillation_results.csv"
+    STUDENT_KWARGS = {}
+    print("=== LARGE STUDENT MODE ===")
 
 CSV_FIELDS = [
     "temperature", "alpha", "seed",
@@ -187,13 +201,13 @@ def main():
     else:
         for temp, alpha, seed in tqdm(pending, desc="Evaluating models"):
             model_name = "student_T" + str(temp) + "_a" + str(alpha) + "_s" + str(seed) + ".pt"
-            model_path = MODEL_DIR / model_name
+            model_path = STUDENT_MODEL_DIR / model_name
 
             if not model_path.exists():
                 print("Missing:", model_name, "- skipping")
                 continue
 
-            student = StudentSSM(n_classes=n_classes).to(device)
+            student = StudentSSM(n_classes=n_classes, **STUDENT_KWARGS).to(device)
             student.load_state_dict(torch.load(model_path, map_location=device, weights_only=True))
             student.eval()
 
