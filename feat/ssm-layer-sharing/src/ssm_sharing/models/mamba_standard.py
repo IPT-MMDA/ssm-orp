@@ -4,8 +4,8 @@ from mamba_ssm import Mamba
 
 class StandardMamba(nn.Module):
     """
-    Стандартна імплементація: N незалежних шарів Mamba.
-    Слугує бейзлайном для порівняння кількості параметрів.
+    Standard implementation: N independent Mamba layers.
+    Serves as a baseline for comparing the number of parameters.
     """
     def __init__(self, d_model: int, n_layers: int, d_state: int = 16, expand: int = 2):
         super().__init__()

@@ -1,4 +1,3 @@
-# test: verify training convergence on small batch (перевірив, що вчиться)
 import torch
 import torch.nn as nn
 
@@ -11,18 +10,18 @@ from tqdm import tqdm
 class Perturbator:
     @staticmethod
     def apply_nothing(x: torch.Tensor, *args) -> torch.Tensor:
-        """Повертає те, що дали."""
+        """Returns the input as is."""
         return x
 
     @staticmethod
     def apply_masking(x: torch.Tensor, mask_ratio: float = 0.2) -> torch.Tensor:
-        """Занулює випадкові 20% сигналу (працює і для Long, і для Float)."""
+        """Zeros out a random percentage (default 20%) of the signal (works for both Long and Float)."""
         mask = (torch.rand(x.shape, device=x.device) > mask_ratio).long()
         return x * mask
 
     @staticmethod
     def apply_gaussian_noise(x: torch.Tensor, std: float = 0.1) -> torch.Tensor:
-        """Додає шум N(0, std^2) тільки якщо дані float, інакше повертає x."""
+        """Adds N(0, std^2) noise only if data is float, otherwise returns x."""
         if not torch.is_floating_point(x):
             return x
         noise = torch.randn_like(x) * std
@@ -32,7 +31,7 @@ class Perturbator:
 class Evaluator:
     @staticmethod
     def get_confidence_interval(data: list, confidence_level: float = 0.95):
-        """Розраховує confidence_level% CI для середнього значення."""
+        """Calculates the confidence_level% CI for the mean."""
         n = len(data)
         m = np.mean(data)
         if n < 2:

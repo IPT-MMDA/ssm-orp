@@ -8,9 +8,9 @@ import random
 
 def generate_bracket_sequence(seq_len=128, max_depth=10):
     """
-    Генерує послідовність дужок та чисел.
-    Клас 1: Правильно збалансована.
-    Клас 0: Небаланс (зайва дужка або неправильний порядок).
+    Generates a sequence of brackets and numbers.
+    Class 1: Correctly balanced.
+    Class 0: Unbalanced (extra bracket or incorrect order).
     """
     seq = torch.zeros(seq_len, dtype=torch.long)
     depth = 0
@@ -18,7 +18,7 @@ def generate_bracket_sequence(seq_len=128, max_depth=10):
     
     actual_len = random.randint(seq_len // 2, seq_len)
     
-    # 0: padding, 1: '(', 2: ')', 3-10: випадкові числа
+    # 0: padding, 1: '(', 2: ')', 3-10: random numbers
     for i in range(actual_len):
         if random.random() < 0.3:
             seq[i] = random.randint(3, 10)
@@ -64,7 +64,7 @@ def split(dataset, batch_size, num_samples, train_split):
 # feat: implement synthetic dataset generator
 def get_synthetic_dataloaders(num_samples: int = 1000, seq_len: int = 64, d_model: int = 128, num_classes: int = 2, batch_size: int = 32, train_split: float = 0.8, **kwargs) -> tuple[DataLoader, DataLoader]:
     """
-    Генерує випадкові дані та ділить їх на Train та Test лоадери.
+    Generates random data and splits it into Train and Test loaders.
     """
     X = torch.randn(num_samples, seq_len, d_model)
     y = torch.randint(0, num_classes, (num_samples,))
@@ -74,7 +74,7 @@ def get_synthetic_dataloaders(num_samples: int = 1000, seq_len: int = 64, d_mode
 
 # feat: implement listops dataset generator
 def get_listops_dataloaders(num_samples=2000, seq_len=128, batch_size=32, train_split=0.8, **kwargs):
-    X_list, y_list = [], []
+    X_list, y_list = []
     for _ in range(num_samples):
         x, y = generate_bracket_sequence(seq_len)
         X_list.append(x)
@@ -89,7 +89,7 @@ def get_listops_dataloaders(num_samples=2000, seq_len=128, batch_size=32, train_
 
 # feat: implement mnist dataset generator
 def get_mnist_dataloaders(batch_size=32, **kwargs):
-    """Завантажує MNIST і розгортає його в послідовності довжиною 784."""
+    """Loads MNIST and flattens it into sequences of length 784."""
     transform = transforms.Compose([
         transforms.ToTensor(),
         transforms.Normalize((0.1307,), (0.3081,)),
