@@ -8,7 +8,7 @@ from tqdm import tqdm
 SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = SCRIPT_DIR.parent
 DATASET_DIR = PROJECT_DIR / "dataset" / "speech_commands"
-CACHE_DIR = PROJECT_DIR / "dataset"
+CACHE_DIR = Path.home() / ".ssm-kd-cache"
 MODEL_DIR = PROJECT_DIR / "models"
 
 EXCLUDED_DIRS = {"_background_noise_"}
@@ -24,6 +24,7 @@ class SpeechCommandsDataset(Dataset):
         ])
         self.class_to_idx = {name: i for i, name in enumerate(self.class_names)}
 
+        CACHE_DIR.mkdir(parents=True, exist_ok=True)
         cache_path = CACHE_DIR / (split + ".pt")
         if cache_path.exists():
             print("Loading", split, "from cache ...")
