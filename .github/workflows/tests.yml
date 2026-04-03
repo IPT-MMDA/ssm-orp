@@ -5,10 +5,12 @@ on:
     branches: [main]
     paths:
       - "sparse-ssm/**"
+      - ".github/workflows/tests.yml"
   pull_request:
     branches: [main]
     paths:
       - "sparse-ssm/**"
+      - ".github/workflows/tests.yml"
 
 jobs:
   test:
