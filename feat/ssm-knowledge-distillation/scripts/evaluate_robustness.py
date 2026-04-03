@@ -25,7 +25,7 @@ if SMALL_MODE:
     print("=== SMALL STUDENT MODE ===")
 else:
     STUDENT_MODEL_DIR = MODEL_DIR
-    CSV_PATH = PROJECT_DIR / "robustness_results_large_student.csv"
+    CSV_PATH = PROJECT_DIR / "robustness_results.csv"
     DISTILL_CSV = PROJECT_DIR / "distillation_results.csv"
     STUDENT_KWARGS = {}
     print("=== LARGE STUDENT MODE ===")
