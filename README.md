@@ -1,5 +1,68 @@
 # Data Analysis: Quadratic Constraints (QC) for Nonlinearities
 
+> **Created by Bulavintsev and Shmyga**
+
+## Overview
+
+This project implements robustness analysis for neural networks using:
+
+- **Empirical attacks** (PGD)
+- **Formal verification** via **Semidefinite Programming (SDP)** with Quadratic Constraints (QC)
+
+The goal is to compare:
+- empirical robustness (PGD)
+- certified robustness (SDP)
+
+on MNIST and CIFAR-10 datasets.
+
+---
+
+## Project Structure
+
+```text
+.
+├── notebooks/
+│   ├── iqc_experiment.ipynb      # Main experiment files
+│   └── another_experiment.ipynb  # Alternative perspective
+├── results/
+│   ├── cifar_results.csv
+│   ├── combined_results.csv
+│   └── mnist_results.csv
+├── src/
+│   ├── attacks/
+│   │   └── pgd.py
+│   ├── data/
+│   │   ├── cifar.py
+│   │   └── mnist.py
+│   ├── experiments/
+│   │   ├── run_cifar.py
+│   │   └── run_mnist.py
+│   ├── models/
+│   │   ├── cifar_model.py
+│   │   └── mnist_model.py
+│   ├── train/
+│   │   └── train.py
+│   ├── utils/
+│   │   ├── extract_weights.py
+│   │   ├── metrics.py
+│   │   └── seed.py
+│   └── verification/
+│       ├── deep_sdp.py
+│       └── solver.py
+├── tests/
+│   ├── run_test.py
+│   ├── test_pgd.py
+│   ├── test_sdp.py
+│   ├── test_shapes.py
+│   └── test.ipynb                # Results of all tests
+├── pyproject.toml
+└── README.md
+```
+
+---
+
+## Theory
+
 This repository contains the mathematical framework for representing nonlinear functions (like ReLU) using Quadratic Constraints. This approach is essential for the robust analysis and verification of neural networks and control systems.
 
 ---
@@ -80,6 +143,7 @@ $$
 
 * **$\nu, \eta \ge 0$**: Non-negative weights representing active/inactive neuron states.
 * **$T$**: A Z-matrix that accounts for cross-neuron interactions, reducing conservatism.
+
 ---
 
 ## 6. QC for Input Set $X$ 
@@ -94,3 +158,82 @@ P = \begin{bmatrix}
 $$
 
 * **Note**: This allows us to treat input bounds as just another QC, simplifying the optimization problem.
+
+---
+
+## Installation
+
+```bash
+pip install -e .
+pip install -e .[dev]
+```
+
+---
+
+## How to run
+
+### Train models
+
+```bash
+python -m src.train.train
+```
+
+### Run experiments
+
+```bash
+python -m src.experiments.run_mnist
+python -m src.experiments.run_cifar
+```
+
+### Run tests
+
+```bash
+pytest
+```
+
+---
+
+## Results
+
+Experimental results are stored in CSV files:
+
+- `mnist_results.csv`
+- `cifar_results.csv`
+
+Each row corresponds to one configuration:
+
+- `epsilon` — perturbation radius in the original input space
+- `clean_acc` — accuracy on clean data
+- `robust_acc` — robustness under PGD attack (1 − attack success rate)
+- `cert_rate` — certified robustness (SDP, computed in normalized space)
+- `time_sec` — verification time
+
+Note: For SDP verification, inputs are normalized, and the perturbation radius is scaled accordingly.
+
+These metrics allow direct comparison between empirical and certified robustness.
+
+---
+
+## Limitations
+
+- SDP verification is computationally expensive (can take minutes per sample)
+- Experiments are limited to small neural networks
+- Only a small number of samples is used due to computational constraints
+- Results should be interpreted as indicative rather than statistically exhaustive
+
+---
+
+## Tests
+
+The repository includes tests for:
+
+- model forward pass
+- PGD attack correctness
+- SDP solver behavior
+- soundness property (SDP vs PGD)
+
+Run all tests:
+
+```bash
+pytest
+```
