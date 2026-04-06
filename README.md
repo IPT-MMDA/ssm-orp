@@ -42,7 +42,8 @@ pip install torch numpy pandas scikit-learn matplotlib pytest
 
 ```bash
 conda activate ssm_ptq
-```)
+```
+)
 
 Navigate to the project directory
 
