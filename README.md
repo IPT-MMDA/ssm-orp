@@ -18,7 +18,7 @@ y_t = C h_t
 
 The dataset is synthetic: sequences are generated using another random (stable) SSM
 
-### Structure:
+## Structure:
 
 model.py         # SSM model
 data.py          # synthetic dataset
@@ -28,4 +28,25 @@ quant_utils.py   # quantization logic
 benchmark.py     # timing, memory
 main.py          # entry point
 
-### How to run:
+## How to run:
+(anaconda prompt)
+
+Create environment
+```bash
+conda create -n ssm_ptq python=3.10 -y
+conda activate ssm_ptq
+pip install torch numpy pandas scikit-learn matplotlib pytest ```
+
+(or activate it:
+
+conda activate ssm_ptq )
+
+Navigate to the project directory
+
+cd ~\ssm_ptq_project
+
+python train_baseline.py
+
+python run_ptq_experiment.py
+
+python plot_results.py
