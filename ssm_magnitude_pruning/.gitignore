@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Experiment outputs
+*.pkl
+*.json
+imp_results*
+imp_summary*
+
+# Tests
+.pytest_cache/
+.coverage
+htmlcov/
+
+# VS Code
+.vscode/
+
