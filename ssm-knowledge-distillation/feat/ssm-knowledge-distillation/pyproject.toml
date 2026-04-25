@@ -1,0 +1,20 @@
+[project]
+name = "ssm-knowledge-distillation"
+version = "0.1.0"
+description = "Knowledge distillation for State Space Models (Mamba) on Speech Commands"
+requires-python = ">=3.10"
+dependencies = [
+    "torch>=2.0",
+    "mamba-ssm>=2.0",
+    "numpy",
+    "soundfile",
+    "scikit-learn",
+    "tqdm",
+    "pandas",
+    "matplotlib",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ipykernel",
+]

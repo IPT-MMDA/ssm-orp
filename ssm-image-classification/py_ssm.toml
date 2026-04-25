@@ -1,0 +1,15 @@
+[project]
+name = "mamba-image-classification"
+version = "0.1.0"
+description = "project for image classification on CIFAR-10 using Mambda (SSM) and CNN baseline"
+readme = "README.md"
+requires-python = ">=3.10"
+
+dependencies = [
+	"torch", 
+	"torchvision",
+	"numpy",
+	"tqdm",
+	"einops",
+	"mamba-ssm"
+] 

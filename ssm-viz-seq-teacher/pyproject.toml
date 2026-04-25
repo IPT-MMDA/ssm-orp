@@ -1,0 +1,21 @@
+[project]
+name = "ssm-vision-distillation"
+version = "0.1.0"
+description = "Knowledge Distillation from ViT to SSM for Sequence Image Tasks"
+dependencies = [
+    "torch>=2.0.0",
+    "torchvision",
+    "timm",
+    "numpy",
+    "scipy",
+    "matplotlib",
+    "pytest"
+]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+# Явно вказуємо, які файли є частиною нашого проєкту
+py-modules = ["model", "utils", "main"]

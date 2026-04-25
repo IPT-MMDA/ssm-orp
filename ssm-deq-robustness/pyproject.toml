@@ -1,0 +1,18 @@
+[project]
+name = "mdeq-robustness"
+version = "0.1.0"
+description = "Study of MDEQ vs ResNet robustness on CIFAR-10"
+dependencies = [
+    "torch>=2.0.0",
+    "torchvision",
+    "torchdeq",
+    "numpy",
+    "tqdm"
+]
+
+[tool.setuptools]
+packages = ["models", "attacks", "utils"]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
