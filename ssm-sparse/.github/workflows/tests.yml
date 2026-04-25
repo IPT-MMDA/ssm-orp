@@ -1,0 +1,42 @@
+name: Tests
+
+on:
+  push:
+    branches: [main, feat/sparse-ssm]
+    paths:
+      - "sparse-ssm/**"
+      - ".github/workflows/tests.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "sparse-ssm/**"
+      - ".github/workflows/tests.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: sparse-ssm
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          # Install CPU-only PyTorch (no CUDA needed for tests)
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          # Install other test dependencies (skip mamba-ssm & causal-conv1d — they need CUDA)
+          pip install transformers tqdm numpy accelerate datasets pytest
+          # Install the package itself without pulling its dependencies again
+          pip install --no-deps -e .
+
+      - name: Run tests
+        run: python -m pytest tests/ -v

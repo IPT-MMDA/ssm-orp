@@ -1,0 +1,8 @@
+[project]
+name = "ssm-lipschitz"
+version = "0.1.0"
+dependencies = [
+    "torch",
+    "numpy",
+    "pytest"
+]

@@ -1,0 +1,10 @@
+.venv
+
+*.egg-info
+build
+
+*cache*
+
+models_saved
+data
+# *.txt

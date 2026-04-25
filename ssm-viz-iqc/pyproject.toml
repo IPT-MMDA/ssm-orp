@@ -1,0 +1,26 @@
+[project]
+name = "iqc-sdp-verification"
+version = "0.1.0"
+description = "IQC/SDP robustness verification for neural networks"
+requires-python = ">=3.10"
+
+dependencies = [
+    "numpy",
+    "torch",
+    "matplotlib",
+    "scipy",
+    "pandas",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
