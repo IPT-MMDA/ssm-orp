@@ -1,0 +1,26 @@
+[
+  {
+    "epoch": 1,
+    "train_loss": 0.7606,
+    "val_accuracy": 0.539,
+    "val_f1": 0.4652,
+    "ci_lower": 0.5046,
+    "ci_upper": 0.5711
+  },
+  {
+    "epoch": 2,
+    "train_loss": 0.6436,
+    "val_accuracy": 0.6216,
+    "val_f1": 0.57,
+    "ci_lower": 0.5883,
+    "ci_upper": 0.6537
+  },
+  {
+    "epoch": 3,
+    "train_loss": 0.5065,
+    "val_accuracy": 0.6686,
+    "val_f1": 0.6296,
+    "ci_lower": 0.6388,
+    "ci_upper": 0.6995
+  }
+]
