@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mamba-lora-ssm"
+version = "0.1.0"
+description = "Parameter-Efficient Fine-Tuning of Mamba SSM using custom LoRA"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "torch>=2.5.1",
+    "transformers>=5.5.0",
+    "datasets>=4.8.4",
+    "tqdm>=4.67.3",
+    "matplotlib>=3.10.8",
+    "scipy>=1.17.1",
+    "pytest"
+]
