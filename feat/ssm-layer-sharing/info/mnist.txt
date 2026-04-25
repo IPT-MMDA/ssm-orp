@@ -1,0 +1,658 @@
+(.venv) dadmo@Dadmon:~/Github/ssm-orp/feat/ssm-layer-sharing$ train --perturbation nothing --dataset mnist --input-dim 1 --classes 10 --batch-size 128 --layers 6
+[Train Started] On 0.35s
+
+[Model] StandardMamba
+[Epochs] 10
+[Learning Rate] 0.001
+[Device] cuda
+[Dataset] mnist
+[Perturbation] nothing
+[Layers] 6
+
+[Time] 87.85s                                                                                                                                                                                                                                                                                                       
+[Epochs] [01/10] | [Current LR] 0.001000 | [Trainable Parameters] 702218
+[Loss Train] 0.88581337 | [Accuracy Train] 0.68792 | [Accuracy Test] 0.91880 | [Accuracy Test Interval] [np.float64(0.9188), np.float64(0.9188)]
+
+[Time] 82.24s                                                                                                                                                                                                                                                                                                       
+[Epochs] [02/10] | [Current LR] 0.000976 | [Trainable Parameters] 702218
+[Loss Train] 0.17306658 | [Accuracy Train] 0.94495 | [Accuracy Test] 0.96000 | [Accuracy Test Interval] [np.float64(0.96), np.float64(0.96)]
+
+[Time] 81.74s                                                                                                                                                                                                                                                                                                       
+[Epochs] [03/10] | [Current LR] 0.000905 | [Trainable Parameters] 702218
+[Loss Train] 0.10480854 | [Accuracy Train] 0.96780 | [Accuracy Test] 0.96800 | [Accuracy Test Interval] [np.float64(0.968), np.float64(0.968)]
+
+[Time] 81.72s                                                                                                                                                                                                                                                                                                       
+[Epochs] [04/10] | [Current LR] 0.000794 | [Trainable Parameters] 702218
+[Loss Train] 0.07715947 | [Accuracy Train] 0.97592 | [Accuracy Test] 0.97480 | [Accuracy Test Interval] [np.float64(0.9748), np.float64(0.9748)]
+
+[Time] 83.04s                                                                                                                                                                                                                                                                                                       
+[Epochs] [05/10] | [Current LR] 0.000655 | [Trainable Parameters] 702218
+[Loss Train] 0.05913157 | [Accuracy Train] 0.98127 | [Accuracy Test] 0.97750 | [Accuracy Test Interval] [np.float64(0.9775), np.float64(0.9775)]
+
+[Time] 81.76s                                                                                                                                                                                                                                                                                                       
+[Epochs] [06/10] | [Current LR] 0.000500 | [Trainable Parameters] 702218
+[Loss Train] 0.04653249 | [Accuracy Train] 0.98457 | [Accuracy Test] 0.98210 | [Accuracy Test Interval] [np.float64(0.9821), np.float64(0.9821)]
+
+[Time] 81.58s                                                                                                                                                                                                                                                                                                       
+[Epochs] [07/10] | [Current LR] 0.000345 | [Trainable Parameters] 702218
+[Loss Train] 0.03513433 | [Accuracy Train] 0.98872 | [Accuracy Test] 0.98190 | [Accuracy Test Interval] [np.float64(0.9819), np.float64(0.9819)]
+
+[Time] 81.43s                                                                                                                                                                                                                                                                                                       
+[Epochs] [08/10] | [Current LR] 0.000206 | [Trainable Parameters] 702218
+[Loss Train] 0.02593441 | [Accuracy Train] 0.99177 | [Accuracy Test] 0.98580 | [Accuracy Test Interval] [np.float64(0.9858), np.float64(0.9858)]
+
+[Time] 81.40s                                                                                                                                                                                                                                                                                                       
+[Epochs] [09/10] | [Current LR] 0.000095 | [Trainable Parameters] 702218
+[Loss Train] 0.01843275 | [Accuracy Train] 0.99432 | [Accuracy Test] 0.98500 | [Accuracy Test Interval] [np.float64(0.985), np.float64(0.985)]
+
+[Time] 119.37s                                                                                                                                                                                                                                                                                                      
+[Epochs] [10/10] | [Current LR] 0.000024 | [Trainable Parameters] 702218
+[Loss Train] 0.01376876 | [Accuracy Train] 0.99595 | [Accuracy Test] 0.98700 | [Accuracy Test Interval] [np.float64(0.9869999999999998), np.float64(0.987)]
+
+
+[Train Finished] 862.47s
+
+[Saved] models_saved/StandardMamba_dataset_mnist_lyrs_6_l0.01376876_testacc_0.98700.pt
+[Train Started] On 0.00s
+
+[Model] SharedMamba
+[Epochs] 10
+[Learning Rate] 0.001
+[Device] cuda
+[Dataset] mnist
+[Perturbation] nothing
+[Layers] 6
+
+[Time] 82.31s                                                                                                                                                                                                                                                                                                       
+[Epochs] [01/10] | [Current LR] 0.001000 | [Trainable Parameters] 118282
+[Loss Train] 0.94955127 | [Accuracy Train] 0.66497 | [Accuracy Test] 0.88920 | [Accuracy Test Interval] [np.float64(0.8892), np.float64(0.8892)]
+
+[Time] 82.19s                                                                                                                                                                                                                                                                                                       
+[Epochs] [02/10] | [Current LR] 0.000976 | [Trainable Parameters] 118282
+[Loss Train] 0.25802043 | [Accuracy Train] 0.91493 | [Accuracy Test] 0.93450 | [Accuracy Test Interval] [np.float64(0.9345), np.float64(0.9345)]
+
+[Time] 82.21s                                                                                                                                                                                                                                                                                                       
+[Epochs] [03/10] | [Current LR] 0.000905 | [Trainable Parameters] 118282
+[Loss Train] 0.15901956 | [Accuracy Train] 0.94925 | [Accuracy Test] 0.96440 | [Accuracy Test Interval] [np.float64(0.9644), np.float64(0.9644)]
+
+[Time] 82.31s                                                                                                                                                                                                                                                                                                       
+[Epochs] [04/10] | [Current LR] 0.000794 | [Trainable Parameters] 118282
+[Loss Train] 0.11299984 | [Accuracy Train] 0.96397 | [Accuracy Test] 0.96610 | [Accuracy Test Interval] [np.float64(0.9661), np.float64(0.9661)]
+
+[Time] 82.11s                                                                                                                                                                                                                                                                                                       
+[Epochs] [05/10] | [Current LR] 0.000655 | [Trainable Parameters] 118282
+[Loss Train] 0.08900186 | [Accuracy Train] 0.97205 | [Accuracy Test] 0.96490 | [Accuracy Test Interval] [np.float64(0.9649), np.float64(0.9649)]
+
+[Time] 82.23s                                                                                                                                                                                                                                                                                                       
+[Epochs] [06/10] | [Current LR] 0.000500 | [Trainable Parameters] 118282
+[Loss Train] 0.07098291 | [Accuracy Train] 0.97730 | [Accuracy Test] 0.97620 | [Accuracy Test Interval] [np.float64(0.9762), np.float64(0.9762)]
+
+[Time] 83.26s                                                                                                                                                                                                                                                                                                       
+[Epochs] [07/10] | [Current LR] 0.000345 | [Trainable Parameters] 118282
+[Loss Train] 0.05563730 | [Accuracy Train] 0.98165 | [Accuracy Test] 0.98010 | [Accuracy Test Interval] [np.float64(0.9801), np.float64(0.9801)]
+
+[Time] 84.77s                                                                                                                                                                                                                                                                                                       
+[Epochs] [08/10] | [Current LR] 0.000206 | [Trainable Parameters] 118282
+[Loss Train] 0.04478363 | [Accuracy Train] 0.98607 | [Accuracy Test] 0.98310 | [Accuracy Test Interval] [np.float64(0.9831), np.float64(0.9831)]
+
+[Time] 84.55s                                                                                                                                                                                                                                                                                                       
+[Epochs] [09/10] | [Current LR] 0.000095 | [Trainable Parameters] 118282
+[Loss Train] 0.03628167 | [Accuracy Train] 0.98915 | [Accuracy Test] 0.98340 | [Accuracy Test Interval] [np.float64(0.9834), np.float64(0.9834)]
+
+[Time] 123.76s                                                                                                                                                                                                                                                                                                      
+[Epochs] [10/10] | [Current LR] 0.000024 | [Trainable Parameters] 118282
+[Loss Train] 0.03084514 | [Accuracy Train] 0.99060 | [Accuracy Test] 0.98430 | [Accuracy Test Interval] [np.float64(0.9842999999999997), np.float64(0.9843)]
+
+
+[Train Finished] 869.69s
+
+[Saved] models_saved/SharedMamba_dataset_mnist_lyrs_6_l0.03084514_testacc_0.98430.pt
+
+(.venv) dadmo@Dadmon:~/Github/ssm-orp/feat/ssm-layer-sharing$ train --perturbation nothing --dataset mnist --input-dim 1 --classes 10 --batch-size 128 --layers 3
+[Train Started] On 0.29s
+
+[Model] StandardMamba
+[Epochs] 10
+[Learning Rate] 0.001
+[Device] cuda
+[Dataset] mnist
+[Perturbation] nothing
+[Layers] 3
+
+[Time] 49.75s                                                                                                                                                                                                                                                        
+[Epochs] [01/10] | [Current LR] 0.001000 | [Trainable Parameters] 352010
+[Loss Train] 0.92787381 | [Accuracy Train] 0.67048 | [Accuracy Test] 0.88960 | [Accuracy Test Interval] [np.float64(0.8896), np.float64(0.8896)]
+
+[Time] 47.67s                                                                                                                                                                                                                                                        
+[Epochs] [02/10] | [Current LR] 0.000976 | [Trainable Parameters] 352010
+[Loss Train] 0.21347337 | [Accuracy Train] 0.93158 | [Accuracy Test] 0.95470 | [Accuracy Test Interval] [np.float64(0.9547), np.float64(0.9547)]
+
+[Time] 48.32s                                                                                                                                                                                                                                                        
+[Epochs] [03/10] | [Current LR] 0.000905 | [Trainable Parameters] 352010
+[Loss Train] 0.13905268 | [Accuracy Train] 0.95578 | [Accuracy Test] 0.95860 | [Accuracy Test Interval] [np.float64(0.9586), np.float64(0.9586)]
+
+[Time] 48.41s                                                                                                                                                                                                                                                        
+[Epochs] [04/10] | [Current LR] 0.000794 | [Trainable Parameters] 352010
+[Loss Train] 0.10371314 | [Accuracy Train] 0.96658 | [Accuracy Test] 0.95790 | [Accuracy Test Interval] [np.float64(0.9579), np.float64(0.9579)]
+
+[Time] 47.09s                                                                                                                                                                                                                                                        
+[Epochs] [05/10] | [Current LR] 0.000655 | [Trainable Parameters] 352010
+[Loss Train] 0.08231073 | [Accuracy Train] 0.97388 | [Accuracy Test] 0.96890 | [Accuracy Test Interval] [np.float64(0.9689), np.float64(0.9689)]
+
+[Time] 46.86s                                                                                                                                                                                                                                                        
+[Epochs] [06/10] | [Current LR] 0.000500 | [Trainable Parameters] 352010
+[Loss Train] 0.06297463 | [Accuracy Train] 0.98058 | [Accuracy Test] 0.97660 | [Accuracy Test Interval] [np.float64(0.9766), np.float64(0.9766)]
+
+[Time] 47.86s                                                                                                                                                                                                                                                        
+[Epochs] [07/10] | [Current LR] 0.000345 | [Trainable Parameters] 352010
+[Loss Train] 0.04982877 | [Accuracy Train] 0.98448 | [Accuracy Test] 0.98140 | [Accuracy Test Interval] [np.float64(0.9814), np.float64(0.9814)]
+
+[Time] 47.89s                                                                                                                                                                                                                                                        
+[Epochs] [08/10] | [Current LR] 0.000206 | [Trainable Parameters] 352010
+[Loss Train] 0.03881826 | [Accuracy Train] 0.98800 | [Accuracy Test] 0.98440 | [Accuracy Test Interval] [np.float64(0.9844), np.float64(0.9844)]
+
+[Time] 47.82s                                                                                                                                                                                                                                                        
+[Epochs] [09/10] | [Current LR] 0.000095 | [Trainable Parameters] 352010
+[Loss Train] 0.03039962 | [Accuracy Train] 0.99097 | [Accuracy Test] 0.98450 | [Accuracy Test Interval] [np.float64(0.9845), np.float64(0.9845)]
+
+[Time] 72.64s                                                                                                                                                                                                                                                        
+[Epochs] [10/10] | [Current LR] 0.000024 | [Trainable Parameters] 352010
+[Loss Train] 0.02538521 | [Accuracy Train] 0.99257 | [Accuracy Test] 0.98540 | [Accuracy Test Interval] [np.float64(0.9854), np.float64(0.9854)]
+
+
+[Train Finished] 504.60s
+
+[Saved] models_saved/StandardMamba_dataset_mnist_lyrs_3_l0.02538521_testacc_0.98540.pt
+[Train Started] On 0.00s
+
+[Model] SharedMamba
+[Epochs] 10
+[Learning Rate] 0.001
+[Device] cuda
+[Dataset] mnist
+[Perturbation] nothing
+[Layers] 3
+
+[Time] 48.16s                                                                                                                                                                                                                                                        
+[Epochs] [01/10] | [Current LR] 0.001000 | [Trainable Parameters] 118282
+[Loss Train] 1.03046457 | [Accuracy Train] 0.62975 | [Accuracy Test] 0.86780 | [Accuracy Test Interval] [np.float64(0.8678), np.float64(0.8678)]
+
+[Time] 47.89s                                                                                                                                                                                                                                                        
+[Epochs] [02/10] | [Current LR] 0.000976 | [Trainable Parameters] 118282
+[Loss Train] 0.30573618 | [Accuracy Train] 0.90055 | [Accuracy Test] 0.93280 | [Accuracy Test Interval] [np.float64(0.9328), np.float64(0.9328)]
+
+[Time] 47.94s                                                                                                                                                                                                                                                        
+[Epochs] [03/10] | [Current LR] 0.000905 | [Trainable Parameters] 118282
+[Loss Train] 0.19286281 | [Accuracy Train] 0.93743 | [Accuracy Test] 0.94890 | [Accuracy Test Interval] [np.float64(0.9489), np.float64(0.9489)]
+
+[Time] 48.04s                                                                                                                                                                                                                                                        
+[Epochs] [04/10] | [Current LR] 0.000794 | [Trainable Parameters] 118282
+[Loss Train] 0.14462918 | [Accuracy Train] 0.95350 | [Accuracy Test] 0.96210 | [Accuracy Test Interval] [np.float64(0.9621), np.float64(0.9621)]
+
+[Time] 48.10s                                                                                                                                                                                                                                                        
+[Epochs] [05/10] | [Current LR] 0.000655 | [Trainable Parameters] 118282
+[Loss Train] 0.11069216 | [Accuracy Train] 0.96405 | [Accuracy Test] 0.96750 | [Accuracy Test Interval] [np.float64(0.9675), np.float64(0.9675)]
+
+[Time] 47.99s                                                                                                                                                                                                                                                        
+[Epochs] [06/10] | [Current LR] 0.000500 | [Trainable Parameters] 118282
+[Loss Train] 0.08702238 | [Accuracy Train] 0.97277 | [Accuracy Test] 0.96560 | [Accuracy Test Interval] [np.float64(0.9656), np.float64(0.9656)]
+
+[Time] 48.02s                                                                                                                                                                                                                                                        
+[Epochs] [07/10] | [Current LR] 0.000345 | [Trainable Parameters] 118282
+[Loss Train] 0.06990114 | [Accuracy Train] 0.97758 | [Accuracy Test] 0.97560 | [Accuracy Test Interval] [np.float64(0.9756), np.float64(0.9756)]
+
+[Time] 48.04s                                                                                                                                                                                                                                                        
+[Epochs] [08/10] | [Current LR] 0.000206 | [Trainable Parameters] 118282
+[Loss Train] 0.05576786 | [Accuracy Train] 0.98228 | [Accuracy Test] 0.97700 | [Accuracy Test Interval] [np.float64(0.977), np.float64(0.977)]
+
+[Time] 48.36s                                                                                                                                                                                                                                                        
+[Epochs] [09/10] | [Current LR] 0.000095 | [Trainable Parameters] 118282
+[Loss Train] 0.04581417 | [Accuracy Train] 0.98573 | [Accuracy Test] 0.97950 | [Accuracy Test Interval] [np.float64(0.9795), np.float64(0.9795)]
+
+[Time] 70.92s                                                                                                                                                                                                                                                        
+[Epochs] [10/10] | [Current LR] 0.000024 | [Trainable Parameters] 118282
+[Loss Train] 0.03944918 | [Accuracy Train] 0.98808 | [Accuracy Test] 0.98100 | [Accuracy Test Interval] [np.float64(0.981), np.float64(0.9810000000000002)]
+
+
+[Train Finished] 503.47s
+
+[Saved] models_saved/SharedMamba_dataset_mnist_lyrs_3_l0.03944918_testacc_0.98100.pt
+______________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+(.venv) dadmo@Dadmon:~/Github/ssm-orp/feat/ssm-layer-sharing$ train --perturbation masking --dataset mnist --input-dim 1 --classes 10 --batch-size 128 --layers 6 --mask 0.2
+[Train Started] On 0.27s
+
+[Model] StandardMamba
+[Epochs] 10
+[Learning Rate] 0.001
+[Device] cuda
+[Dataset] mnist
+[Perturbation] masking
+[Layers] 6
+
+[Time] 85.88s                                                                                                                                                                                                                                                        
+[Epochs] [01/10] | [Current LR] 0.001000 | [Trainable Parameters] 702218
+[Loss Train] 0.74988755 | [Accuracy Train] 0.73863 | [Accuracy Test] 0.66935 | [Accuracy Test Interval] [np.float64(0.6458435212380765), np.float64(0.6928564787619235)]
+
+[Time] 83.93s                                                                                                                                                                                                                                                        
+[Epochs] [02/10] | [Current LR] 0.000976 | [Trainable Parameters] 702218
+[Loss Train] 0.18138170 | [Accuracy Train] 0.94292 | [Accuracy Test] 0.52895 | [Accuracy Test Interval] [np.float64(0.5092553826589293), np.float64(0.5486446173410707)]
+
+[Time] 84.06s                                                                                                                                                                                                                                                        
+[Epochs] [03/10] | [Current LR] 0.000905 | [Trainable Parameters] 702218
+[Loss Train] 0.11857731 | [Accuracy Train] 0.96347 | [Accuracy Test] 0.44620 | [Accuracy Test Interval] [np.float64(0.42332883147488565), np.float64(0.46907116852511443)]
+
+[Time] 83.77s                                                                                                                                                                                                                                                        
+[Epochs] [04/10] | [Current LR] 0.000794 | [Trainable Parameters] 702218
+[Loss Train] 0.08842154 | [Accuracy Train] 0.97240 | [Accuracy Test] 0.42175 | [Accuracy Test Interval] [np.float64(0.4160322078687213), np.float64(0.4274677921312787)]
+
+[Time] 83.93s                                                                                                                                                                                                                                                        
+[Epochs] [05/10] | [Current LR] 0.000655 | [Trainable Parameters] 702218
+[Loss Train] 0.06780725 | [Accuracy Train] 0.97857 | [Accuracy Test] 0.46665 | [Accuracy Test Interval] [np.float64(0.4583909669214867), np.float64(0.47490903307851334)]
+
+[Time] 83.51s                                                                                                                                                                                                                                                        
+[Epochs] [06/10] | [Current LR] 0.000500 | [Trainable Parameters] 702218
+[Loss Train] 0.05309402 | [Accuracy Train] 0.98275 | [Accuracy Test] 0.52630 | [Accuracy Test Interval] [np.float64(0.5059700724221206), np.float64(0.5466299275778794)]
+
+[Time] 84.06s                                                                                                                                                                                                                                                        
+[Epochs] [07/10] | [Current LR] 0.000345 | [Trainable Parameters] 702218
+[Loss Train] 0.04045582 | [Accuracy Train] 0.98730 | [Accuracy Test] 0.46980 | [Accuracy Test Interval] [np.float64(0.4507406928957379), np.float64(0.48885930710426206)]
+
+[Time] 85.14s                                                                                                                                                                                                                                                        
+[Epochs] [08/10] | [Current LR] 0.000206 | [Trainable Parameters] 702218
+[Loss Train] 0.02977759 | [Accuracy Train] 0.99090 | [Accuracy Test] 0.47000 | [Accuracy Test Interval] [np.float64(0.43442262673871085), np.float64(0.505577373261289)]
+
+[Time] 85.50s                                                                                                                                                                                                                                                        
+[Epochs] [09/10] | [Current LR] 0.000095 | [Trainable Parameters] 702218
+[Loss Train] 0.02089353 | [Accuracy Train] 0.99392 | [Accuracy Test] 0.49340 | [Accuracy Test Interval] [np.float64(0.47942317479020796), np.float64(0.507376825209792)]
+
+[Time] 126.11s                                                                                                                                                                                                                                                       
+[Epochs] [10/10] | [Current LR] 0.000024 | [Trainable Parameters] 702218
+[Loss Train] 0.01545619 | [Accuracy Train] 0.99562 | [Accuracy Test] 0.48020 | [Accuracy Test Interval] [np.float64(0.47822760880852755), np.float64(0.48217239119147237)]
+
+
+[Train Finished] 886.16s
+
+[Saved] models_saved/StandardMamba_dataset_mnist_lyrs_6_l0.01545619_testacc_0.48020.pt
+[Train Started] On 0.00s
+
+[Model] SharedMamba
+[Epochs] 10
+[Learning Rate] 0.001
+[Device] cuda
+[Dataset] mnist
+[Perturbation] masking
+[Layers] 6
+
+[Time] 85.42s                                                                                                                                                                                                                                                        
+[Epochs] [01/10] | [Current LR] 0.001000 | [Trainable Parameters] 118282
+[Loss Train] 0.94953040 | [Accuracy Train] 0.66492 | [Accuracy Test] 0.49480 | [Accuracy Test Interval] [np.float64(0.4668463495804156), np.float64(0.5227536504195844)]
+
+[Time] 84.57s                                                                                                                                                                                                                                                        
+[Epochs] [02/10] | [Current LR] 0.000976 | [Trainable Parameters] 118282
+[Loss Train] 0.25985490 | [Accuracy Train] 0.91338 | [Accuracy Test] 0.30640 | [Accuracy Test Interval] [np.float64(0.3051293795263827), np.float64(0.3076706204736173)]
+
+[Time] 84.56s                                                                                                                                                                                                                                                        
+[Epochs] [03/10] | [Current LR] 0.000905 | [Trainable Parameters] 118282
+[Loss Train] 0.16062830 | [Accuracy Train] 0.94837 | [Accuracy Test] 0.23035 | [Accuracy Test Interval] [np.float64(0.21446724407978163), np.float64(0.24623275592021837)]
+
+[Time] 85.42s                                                                                                                                                                                                                                                        
+[Epochs] [04/10] | [Current LR] 0.000794 | [Trainable Parameters] 118282
+[Loss Train] 0.11444617 | [Accuracy Train] 0.96365 | [Accuracy Test] 0.31595 | [Accuracy Test Interval] [np.float64(0.3102322078687213), np.float64(0.3216677921312787)]
+
+[Time] 85.54s                                                                                                                                                                                                                                                        
+[Epochs] [05/10] | [Current LR] 0.000655 | [Trainable Parameters] 118282
+[Loss Train] 0.09048728 | [Accuracy Train] 0.97127 | [Accuracy Test] 0.21570 | [Accuracy Test Interval] [np.float64(0.19664069289573793), np.float64(0.23475930710426207)]
+
+[Time] 87.01s                                                                                                                                                                                                                                                        
+[Epochs] [06/10] | [Current LR] 0.000500 | [Trainable Parameters] 118282
+[Loss Train] 0.07211019 | [Accuracy Train] 0.97612 | [Accuracy Test] 0.23290 | [Accuracy Test Interval] [np.float64(0.18080456058168384), np.float64(0.2849954394183162)]
+
+[Time] 86.83s                                                                                                                                                                                                                                                        
+[Epochs] [07/10] | [Current LR] 0.000345 | [Trainable Parameters] 118282
+[Loss Train] 0.05689399 | [Accuracy Train] 0.98222 | [Accuracy Test] 0.22015 | [Accuracy Test Interval] [np.float64(0.16106614797678767), np.float64(0.2792338520232124)]
+
+[Time] 85.69s                                                                                                                                                                                                                                                        
+[Epochs] [08/10] | [Current LR] 0.000206 | [Trainable Parameters] 118282
+[Loss Train] 0.04558779 | [Accuracy Train] 0.98595 | [Accuracy Test] 0.27915 | [Accuracy Test Interval] [np.float64(0.24293731650190226), np.float64(0.31536268349809776)]
+
+[Time] 83.56s                                                                                                                                                                                                                                                        
+[Epochs] [09/10] | [Current LR] 0.000095 | [Trainable Parameters] 118282
+[Loss Train] 0.03698888 | [Accuracy Train] 0.98910 | [Accuracy Test] 0.27420 | [Accuracy Test Interval] [np.float64(0.22718704247615387), np.float64(0.32121295752384615)]
+
+[Time] 121.20s                                                                                                                                                                                                                                                       
+[Epochs] [10/10] | [Current LR] 0.000024 | [Trainable Parameters] 118282
+[Loss Train] 0.03172547 | [Accuracy Train] 0.99035 | [Accuracy Test] 0.26494 | [Accuracy Test Interval] [np.float64(0.262843191948917), np.float64(0.26703680805108304)]
+
+
+[Train Finished] 889.80s
+
+[Saved] models_saved/SharedMamba_dataset_mnist_lyrs_6_l0.03172547_testacc_0.26494.pt
+(.venv) dadmo@Dadmon:~/Github/ssm-orp/feat/ssm-layer-sharing$ train --perturbation masking --dataset mnist --input-dim 1 --classes 10 --batch-size 128 --layers 3 --mask 0.2
+[Train Started] On 0.25s
+
+[Model] StandardMamba
+[Epochs] 10
+[Learning Rate] 0.001
+[Device] cuda
+[Dataset] mnist
+[Perturbation] masking
+[Layers] 3
+
+[Time] 48.02s                                                                                                                                                                                                                                                        
+[Epochs] [01/10] | [Current LR] 0.001000 | [Trainable Parameters] 352010
+[Loss Train] 0.83722498 | [Accuracy Train] 0.70657 | [Accuracy Test] 0.55280 | [Accuracy Test Interval] [np.float64(0.5223051086331806), np.float64(0.5832948913668193)]
+
+[Time] 47.14s                                                                                                                                                                                                                                                        
+[Epochs] [02/10] | [Current LR] 0.000976 | [Trainable Parameters] 352010
+[Loss Train] 0.20901413 | [Accuracy Train] 0.93500 | [Accuracy Test] 0.56080 | [Accuracy Test Interval] [np.float64(0.5582587590527646), np.float64(0.5633412409472354)]
+
+[Time] 46.31s                                                                                                                                                                                                                                                        
+[Epochs] [03/10] | [Current LR] 0.000905 | [Trainable Parameters] 352010
+[Loss Train] 0.12079216 | [Accuracy Train] 0.96207 | [Accuracy Test] 0.71315 | [Accuracy Test Interval] [np.float64(0.7099734488159559), np.float64(0.716326551184044)]
+
+[Time] 46.44s                                                                                                                                                                                                                                                        
+[Epochs] [04/10] | [Current LR] 0.000794 | [Trainable Parameters] 352010
+[Loss Train] 0.09108355 | [Accuracy Train] 0.97158 | [Accuracy Test] 0.73250 | [Accuracy Test Interval] [np.float64(0.7223350362110605), np.float64(0.7426649637889393)]
+
+[Time] 46.37s                                                                                                                                                                                                                                                        
+[Epochs] [05/10] | [Current LR] 0.000655 | [Trainable Parameters] 352010
+[Loss Train] 0.07333535 | [Accuracy Train] 0.97678 | [Accuracy Test] 0.70900 | [Accuracy Test Interval] [np.float64(0.709), np.float64(0.709)]
+
+[Time] 46.57s                                                                                                                                                                                                                                                        
+[Epochs] [06/10] | [Current LR] 0.000500 | [Trainable Parameters] 352010
+[Loss Train] 0.05932616 | [Accuracy Train] 0.98140 | [Accuracy Test] 0.73805 | [Accuracy Test Interval] [np.float64(0.7145435212380765), np.float64(0.7615564787619234)]
+
+[Time] 46.52s                                                                                                                                                                                                                                                        
+[Epochs] [07/10] | [Current LR] 0.000345 | [Trainable Parameters] 352010
+[Loss Train] 0.04708223 | [Accuracy Train] 0.98532 | [Accuracy Test] 0.64905 | [Accuracy Test Interval] [np.float64(0.6458734488159567), np.float64(0.6522265511840434)]
+
+[Time] 46.34s                                                                                                                                                                                                                                                        
+[Epochs] [08/10] | [Current LR] 0.000206 | [Trainable Parameters] 352010
+[Loss Train] 0.03760665 | [Accuracy Train] 0.98825 | [Accuracy Test] 0.61000 | [Accuracy Test Interval] [np.float64(0.6087293795263826), np.float64(0.6112706204736174)]
+
+[Time] 46.28s                                                                                                                                                                                                                                                        
+[Epochs] [09/10] | [Current LR] 0.000095 | [Trainable Parameters] 352010
+[Loss Train] 0.02930222 | [Accuracy Train] 0.99117 | [Accuracy Test] 0.61010 | [Accuracy Test Interval] [np.float64(0.6088293795263826), np.float64(0.6113706204736173)]
+
+[Time] 70.02s                                                                                                                                                                                                                                                        
+[Epochs] [10/10] | [Current LR] 0.000024 | [Trainable Parameters] 352010
+[Loss Train] 0.02439984 | [Accuracy Train] 0.99263 | [Accuracy Test] 0.61086 | [Accuracy Test Interval] [np.float64(0.6086998800879061), np.float64(0.6130201199120938)]
+
+
+[Train Finished] 490.25s
+
+[Saved] models_saved/StandardMamba_dataset_mnist_lyrs_3_l0.02439984_testacc_0.61086.pt
+[Train Started] On 0.00s
+
+[Model] SharedMamba
+[Epochs] 10
+[Learning Rate] 0.001
+[Device] cuda
+[Dataset] mnist
+[Perturbation] masking
+[Layers] 3
+
+[Time] 46.76s                                                                                                                                                                                                                                                        
+[Epochs] [01/10] | [Current LR] 0.001000 | [Trainable Parameters] 118282
+[Loss Train] 1.04217076 | [Accuracy Train] 0.62257 | [Accuracy Test] 0.36545 | [Accuracy Test Interval] [np.float64(0.3482966236061639), np.float64(0.38260337639383607)]
+
+[Time] 46.67s                                                                                                                                                                                                                                                        
+[Epochs] [02/10] | [Current LR] 0.000976 | [Trainable Parameters] 118282
+[Loss Train] 0.30516858 | [Accuracy Train] 0.89983 | [Accuracy Test] 0.43580 | [Accuracy Test Interval] [np.float64(0.4269056566846776), np.float64(0.4446943433153223)]
+
+[Time] 46.72s                                                                                                                                                                                                                                                        
+[Epochs] [03/10] | [Current LR] 0.000905 | [Trainable Parameters] 118282
+[Loss Train] 0.19337437 | [Accuracy Train] 0.93737 | [Accuracy Test] 0.46210 | [Accuracy Test Interval] [np.float64(0.45955875905276494), np.float64(0.46464124094723497)]
+
+[Time] 46.72s                                                                                                                                                                                                                                                        
+[Epochs] [04/10] | [Current LR] 0.000794 | [Trainable Parameters] 118282
+[Loss Train] 0.14175534 | [Accuracy Train] 0.95392 | [Accuracy Test] 0.47220 | [Accuracy Test Interval] [np.float64(0.4480582110012679), np.float64(0.4963417889987321)]
+
+[Time] 46.99s                                                                                                                                                                                                                                                        
+[Epochs] [05/10] | [Current LR] 0.000655 | [Trainable Parameters] 118282
+[Loss Train] 0.10858865 | [Accuracy Train] 0.96575 | [Accuracy Test] 0.54215 | [Accuracy Test Interval] [np.float64(0.5199141417116939), np.float64(0.5643858582883061)]
+
+[Time] 46.85s                                                                                                                                                                                                                                                        
+[Epochs] [06/10] | [Current LR] 0.000500 | [Trainable Parameters] 118282
+[Loss Train] 0.08597829 | [Accuracy Train] 0.97275 | [Accuracy Test] 0.48500 | [Accuracy Test Interval] [np.float64(0.4735644157374426), np.float64(0.49643558426255735)]
+
+[Time] 46.81s                                                                                                                                                                                                                                                        
+[Epochs] [07/10] | [Current LR] 0.000345 | [Trainable Parameters] 118282
+[Loss Train] 0.06906455 | [Accuracy Train] 0.97853 | [Accuracy Test] 0.46730 | [Accuracy Test Interval] [np.float64(0.46094689763191266), np.float64(0.47365310236808733)]
+
+[Time] 46.77s                                                                                                                                                                                                                                                        
+[Epochs] [08/10] | [Current LR] 0.000206 | [Trainable Parameters] 118282
+[Loss Train] 0.05501723 | [Accuracy Train] 0.98253 | [Accuracy Test] 0.50475 | [Accuracy Test Interval] [np.float64(0.48759662360616396), np.float64(0.5219033763938361)]
+
+[Time] 46.53s                                                                                                                                                                                                                                                        
+[Epochs] [09/10] | [Current LR] 0.000095 | [Trainable Parameters] 118282
+[Loss Train] 0.04536166 | [Accuracy Train] 0.98602 | [Accuracy Test] 0.38895 | [Accuracy Test Interval] [np.float64(0.379420346447869), np.float64(0.39847965355213105)]
+
+[Time] 70.79s                                                                                                                                                                                                                                                        
+[Epochs] [10/10] | [Current LR] 0.000024 | [Trainable Parameters] 118282
+[Loss Train] 0.03918427 | [Accuracy Train] 0.98810 | [Accuracy Test] 0.37473 | [Accuracy Test Interval] [np.float64(0.3725238200238258), np.float64(0.37693617997617423)]
+
+
+[Train Finished] 491.61s
+
+[Saved] models_saved/SharedMamba_dataset_mnist_lyrs_3_l0.03918427_testacc_0.37473.pt
+______________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+(.venv) dadmo@Dadmon:~/Github/ssm-orp/feat/ssm-layer-sharing$ train --perturbation masking --dataset mnist --input-dim 1 --classes 10 --batch-size 128 --layers 6 --mask 0.5
+[Train Started] On 0.25s
+
+[Model] StandardMamba
+[Epochs] 10
+[Learning Rate] 0.001
+[Device] cuda
+[Dataset] mnist
+[Perturbation] masking
+[Layers] 6
+
+[Time] 83.68s                                                                                                                                                                                                                                                        
+[Epochs] [01/10] | [Current LR] 0.001000 | [Trainable Parameters] 702218
+[Loss Train] 0.86314753 | [Accuracy Train] 0.69925 | [Accuracy Test] 0.15870 | [Accuracy Test Interval] [np.float64(0.14345255431659046), np.float64(0.17394744568340956)]
+
+[Time] 81.72s                                                                                                                                                                                                                                                        
+[Epochs] [02/10] | [Current LR] 0.000976 | [Trainable Parameters] 702218
+[Loss Train] 0.19936288 | [Accuracy Train] 0.93763 | [Accuracy Test] 0.11035 | [Accuracy Test Interval] [np.float64(0.0906553826589292), np.float64(0.1300446173410708)]
+
+[Time] 81.66s                                                                                                                                                                                                                                                        
+[Epochs] [03/10] | [Current LR] 0.000905 | [Trainable Parameters] 702218
+[Loss Train] 0.11487897 | [Accuracy Train] 0.96388 | [Accuracy Test] 0.10975 | [Accuracy Test Interval] [np.float64(0.09767910550063397), np.float64(0.12182089449936603)]
+
+[Time] 81.73s                                                                                                                                                                                                                                                        
+[Epochs] [04/10] | [Current LR] 0.000794 | [Trainable Parameters] 702218
+[Loss Train] 0.08309468 | [Accuracy Train] 0.97448 | [Accuracy Test] 0.11235 | [Accuracy Test Interval] [np.float64(0.11171468976319125), np.float64(0.11298531023680876)]
+
+[Time] 83.37s                                                                                                                                                                                                                                                        
+[Epochs] [05/10] | [Current LR] 0.000655 | [Trainable Parameters] 702218
+[Loss Train] 0.06470400 | [Accuracy Train] 0.97917 | [Accuracy Test] 0.12850 | [Accuracy Test Interval] [np.float64(0.11198193384297296), np.float64(0.14501806615702706)]
+
+[Time] 84.30s                                                                                                                                                                                                                                                        
+[Epochs] [06/10] | [Current LR] 0.000500 | [Trainable Parameters] 702218
+[Loss Train] 0.04829483 | [Accuracy Train] 0.98492 | [Accuracy Test] 0.16050 | [Accuracy Test Interval] [np.float64(0.15287627715829513), np.float64(0.16812372284170482)]
+
+[Time] 84.25s                                                                                                                                                                                                                                                        
+[Epochs] [07/10] | [Current LR] 0.000345 | [Trainable Parameters] 702218
+[Loss Train] 0.03644119 | [Accuracy Train] 0.98825 | [Accuracy Test] 0.17280 | [Accuracy Test Interval] [np.float64(0.11053959679274399), np.float64(0.23506040320725602)]
+
+[Time] 85.59s                                                                                                                                                                                                                                                        
+[Epochs] [08/10] | [Current LR] 0.000206 | [Trainable Parameters] 702218
+[Loss Train] 0.02573466 | [Accuracy Train] 0.99250 | [Accuracy Test] 0.13610 | [Accuracy Test Interval] [np.float64(0.09544014484424088), np.float64(0.17675985515575912)]
+
+[Time] 85.21s                                                                                                                                                                                                                                                        
+[Epochs] [09/10] | [Current LR] 0.000095 | [Trainable Parameters] 702218
+[Loss Train] 0.01779398 | [Accuracy Train] 0.99503 | [Accuracy Test] 0.13670 | [Accuracy Test Interval] [np.float64(0.13542937952638248), np.float64(0.1379706204736175)]
+
+[Time] 123.18s                                                                                                                                                                                                                                                       
+[Epochs] [10/10] | [Current LR] 0.000024 | [Trainable Parameters] 702218
+[Loss Train] 0.01323602 | [Accuracy Train] 0.99615 | [Accuracy Test] 0.14829 | [Accuracy Test Interval] [np.float64(0.1466288754738899), np.float64(0.14995112452611012)]
+
+
+[Train Finished] 874.96s
+
+[Saved] models_saved/StandardMamba_dataset_mnist_lyrs_6_l0.01323602_testacc_0.14829.pt
+[Train Started] On 0.00s
+
+[Model] SharedMamba
+[Epochs] 10
+[Learning Rate] 0.001
+[Device] cuda
+[Dataset] mnist
+[Perturbation] masking
+[Layers] 6
+
+[Time] 142.12s                                                                                                                                                                                                                                                       
+[Epochs] [01/10] | [Current LR] 0.001000 | [Trainable Parameters] 118282
+[Loss Train] 0.94953281 | [Accuracy Train] 0.66495 | [Accuracy Test] 0.13240 | [Accuracy Test Interval] [np.float64(0.11969379526382529), np.float64(0.1451062047361747)]
+
+[Time] 104.15s                                                                                                                                                                                                                                                       
+[Epochs] [02/10] | [Current LR] 0.000976 | [Trainable Parameters] 118282
+[Loss Train] 0.25951738 | [Accuracy Train] 0.91392 | [Accuracy Test] 0.15130 | [Accuracy Test Interval] [np.float64(0.12588759052765058), np.float64(0.1767124094723494)]
+
+[Time] 85.97s                                                                                                                                                                                                                                                        
+[Epochs] [03/10] | [Current LR] 0.000905 | [Trainable Parameters] 118282
+[Loss Train] 0.15914569 | [Accuracy Train] 0.94913 | [Accuracy Test] 0.09675 | [Accuracy Test Interval] [np.float64(0.09484406928957383), np.float64(0.09865593071042618)]
+
+[Time] 86.61s                                                                                                                                                                                                                                                        
+[Epochs] [04/10] | [Current LR] 0.000794 | [Trainable Parameters] 118282
+[Loss Train] 0.11305805 | [Accuracy Train] 0.96430 | [Accuracy Test] 0.10250 | [Accuracy Test Interval] [np.float64(0.09614689763191264), np.float64(0.10885310236808735)]
+
+[Time] 143.57s                                                                                                                                                                                                                                                       
+[Epochs] [05/10] | [Current LR] 0.000655 | [Trainable Parameters] 118282
+[Loss Train] 0.08973923 | [Accuracy Train] 0.97127 | [Accuracy Test] 0.12630 | [Accuracy Test Interval] [np.float64(0.11105255431659028), np.float64(0.1415474456834097)]
+
+[Time] 84.73s                                                                                                                                                                                                                                                        
+[Epochs] [06/10] | [Current LR] 0.000500 | [Trainable Parameters] 118282
+[Loss Train] 0.07065152 | [Accuracy Train] 0.97720 | [Accuracy Test] 0.10775 | [Accuracy Test Interval] [np.float64(0.09186724407978161), np.float64(0.12363275592021838)]
+
+[Time] 85.89s                                                                                                                                                                                                                                                        
+[Epochs] [07/10] | [Current LR] 0.000345 | [Trainable Parameters] 118282
+[Loss Train] 0.05667568 | [Accuracy Train] 0.98222 | [Accuracy Test] 0.09570 | [Accuracy Test Interval] [np.float64(0.09442937952638258), np.float64(0.09697062047361743)]
+
+[Time] 83.92s                                                                                                                                                                                                                                                        
+[Epochs] [08/10] | [Current LR] 0.000206 | [Trainable Parameters] 118282
+[Loss Train] 0.04556582 | [Accuracy Train] 0.98545 | [Accuracy Test] 0.09545 | [Accuracy Test Interval] [np.float64(0.09354406928957375), np.float64(0.09735593071042627)]
+
+[Time] 85.78s                                                                                                                                                                                                                                                        
+[Epochs] [09/10] | [Current LR] 0.000095 | [Trainable Parameters] 118282
+[Loss Train] 0.03652901 | [Accuracy Train] 0.98913 | [Accuracy Test] 0.09570 | [Accuracy Test Interval] [np.float64(0.0957), np.float64(0.0957)]
+
+[Time] 125.34s                                                                                                                                                                                                                                                       
+[Epochs] [10/10] | [Current LR] 0.000024 | [Trainable Parameters] 118282
+[Loss Train] 0.03122348 | [Accuracy Train] 0.99072 | [Accuracy Test] 0.09557 | [Accuracy Test Interval] [np.float64(0.09549421867292818), np.float64(0.09564578132707183)]
+
+
+[Train Finished] 1028.08s
+
+[Saved] models_saved/SharedMamba_dataset_mnist_lyrs_6_l0.03122348_testacc_0.09557.pt
+(.venv) dadmo@Dadmon:~/Github/ssm-orp/feat/ssm-layer-sharing$ train --perturbation masking --dataset mnist --input-dim 1 --classes 10 --batch-size 128 --layers 3 --mask 0.5
+[Train Started] On 0.25s
+
+[Model] StandardMamba
+[Epochs] 10
+[Learning Rate] 0.001
+[Device] cuda
+[Dataset] mnist
+[Perturbation] masking
+[Layers] 3
+
+[Time] 49.44s                                                                                                                                                                                                                                                        
+[Epochs] [01/10] | [Current LR] 0.001000 | [Trainable Parameters] 352010
+[Loss Train] 0.80700192 | [Accuracy Train] 0.71447 | [Accuracy Test] 0.35360 | [Accuracy Test Interval] [np.float64(0.3167520062650936), np.float64(0.39044799373490646)]
+
+[Time] 48.71s                                                                                                                                                                                                                                                        
+[Epochs] [02/10] | [Current LR] 0.000976 | [Trainable Parameters] 352010
+[Loss Train] 0.18987372 | [Accuracy Train] 0.93940 | [Accuracy Test] 0.18665 | [Accuracy Test Interval] [np.float64(0.14789607555466722), np.float64(0.2254039244453328)]
+
+[Time] 48.99s                                                                                                                                                                                                                                                        
+[Epochs] [03/10] | [Current LR] 0.000905 | [Trainable Parameters] 352010
+[Loss Train] 0.13167702 | [Accuracy Train] 0.95857 | [Accuracy Test] 0.32220 | [Accuracy Test Interval] [np.float64(0.3145762771582953), np.float64(0.3298237228417047)]
+
+[Time] 47.79s                                                                                                                                                                                                                                                        
+[Epochs] [04/10] | [Current LR] 0.000794 | [Trainable Parameters] 352010
+[Loss Train] 0.10078211 | [Accuracy Train] 0.96815 | [Accuracy Test] 0.29490 | [Accuracy Test Interval] [np.float64(0.2923587590527653), np.float64(0.2974412409472347)]
+
+[Time] 48.41s                                                                                                                                                                                                                                                        
+[Epochs] [05/10] | [Current LR] 0.000655 | [Trainable Parameters] 352010
+[Loss Train] 0.07805999 | [Accuracy Train] 0.97592 | [Accuracy Test] 0.22755 | [Accuracy Test Interval] [np.float64(0.2129378645533991), np.float64(0.24216213544660084)]
+
+[Time] 50.59s                                                                                                                                                                                                                                                        
+[Epochs] [06/10] | [Current LR] 0.000500 | [Trainable Parameters] 352010
+[Loss Train] 0.06372182 | [Accuracy Train] 0.97977 | [Accuracy Test] 0.17810 | [Accuracy Test Interval] [np.float64(0.1692056566846778), np.float64(0.18699434331532216)]
+
+[Time] 47.85s                                                                                                                                                                                                                                                        
+[Epochs] [07/10] | [Current LR] 0.000345 | [Trainable Parameters] 352010
+[Loss Train] 0.04997177 | [Accuracy Train] 0.98460 | [Accuracy Test] 0.16960 | [Accuracy Test Interval] [np.float64(0.16070565668467762), np.float64(0.17849434331532238)]
+
+[Time] 47.81s                                                                                                                                                                                                                                                        
+[Epochs] [08/10] | [Current LR] 0.000206 | [Trainable Parameters] 352010
+[Loss Train] 0.03881335 | [Accuracy Train] 0.98823 | [Accuracy Test] 0.15560 | [Accuracy Test Interval] [np.float64(0.14924689763191262), np.float64(0.16195310236808735)]
+
+[Time] 47.80s                                                                                                                                                                                                                                                        
+[Epochs] [09/10] | [Current LR] 0.000095 | [Trainable Parameters] 352010
+[Loss Train] 0.03039982 | [Accuracy Train] 0.99045 | [Accuracy Test] 0.17230 | [Accuracy Test Interval] [np.float64(0.1710293795263825), np.float64(0.17357062047361752)]
+
+[Time] 72.50s                                                                                                                                                                                                                                                        
+[Epochs] [10/10] | [Current LR] 0.000024 | [Trainable Parameters] 352010
+[Loss Train] 0.02573166 | [Accuracy Train] 0.99225 | [Accuracy Test] 0.17684 | [Accuracy Test Interval] [np.float64(0.17517281080441968), np.float64(0.1785071891955803)]
+
+
+[Train Finished] 510.13s
+
+[Saved] models_saved/StandardMamba_dataset_mnist_lyrs_3_l0.02573166_testacc_0.17684.pt
+[Train Started] On 0.00s
+
+[Model] SharedMamba
+[Epochs] 10
+[Learning Rate] 0.001
+[Device] cuda
+[Dataset] mnist
+[Perturbation] masking
+[Layers] 3
+
+[Time] 48.08s                                                                                                                                                                                                                                                        
+[Epochs] [01/10] | [Current LR] 0.001000 | [Trainable Parameters] 118282
+[Loss Train] 1.06024525 | [Accuracy Train] 0.61453 | [Accuracy Test] 0.12830 | [Accuracy Test Interval] [np.float64(0.1155937952638253), np.float64(0.1410062047361747)]
+
+[Time] 48.26s                                                                                                                                                                                                                                                        
+[Epochs] [02/10] | [Current LR] 0.000976 | [Trainable Parameters] 118282
+[Loss Train] 0.30227336 | [Accuracy Train] 0.90077 | [Accuracy Test] 0.16480 | [Accuracy Test Interval] [np.float64(0.15082317479020796), np.float64(0.17877682520979205)]
+
+[Time] 48.22s                                                                                                                                                                                                                                                        
+[Epochs] [03/10] | [Current LR] 0.000905 | [Trainable Parameters] 118282
+[Loss Train] 0.19321818 | [Accuracy Train] 0.93773 | [Accuracy Test] 0.14195 | [Accuracy Test Interval] [np.float64(0.12860848502701663), np.float64(0.15529151497298335)]
+
+[Time] 48.17s                                                                                                                                                                                                                                                        
+[Epochs] [04/10] | [Current LR] 0.000794 | [Trainable Parameters] 118282
+[Loss Train] 0.14449960 | [Accuracy Train] 0.95387 | [Accuracy Test] 0.17230 | [Accuracy Test Interval] [np.float64(0.1710293795263825), np.float64(0.17357062047361752)]
+
+[Time] 48.07s                                                                                                                                                                                                                                                        
+[Epochs] [05/10] | [Current LR] 0.000655 | [Trainable Parameters] 118282
+[Loss Train] 0.11055343 | [Accuracy Train] 0.96552 | [Accuracy Test] 0.18425 | [Accuracy Test Interval] [np.float64(0.16455538265892927), np.float64(0.20394461734107072)]
+
+[Time] 48.18s                                                                                                                                                                                                                                                        
+[Epochs] [06/10] | [Current LR] 0.000500 | [Trainable Parameters] 118282
+[Loss Train] 0.08600782 | [Accuracy Train] 0.97297 | [Accuracy Test] 0.11600 | [Accuracy Test Interval] [np.float64(0.10837627715829522), np.float64(0.12362372284170477)]
+
+[Time] 48.05s                                                                                                                                                                                                                                                        
+[Epochs] [07/10] | [Current LR] 0.000345 | [Trainable Parameters] 118282
+[Loss Train] 0.06921088 | [Accuracy Train] 0.97847 | [Accuracy Test] 0.13270 | [Accuracy Test Interval] [np.float64(0.11491131336935544), np.float64(0.15048868663064455)]
+
+[Time] 48.21s                                                                                                                                                                                                                                                        
+[Epochs] [08/10] | [Current LR] 0.000206 | [Trainable Parameters] 118282
+[Loss Train] 0.05534715 | [Accuracy Train] 0.98320 | [Accuracy Test] 0.11210 | [Accuracy Test Interval] [np.float64(0.0993937952638253), np.float64(0.12480620473617471)]
+
+[Time] 48.30s                                                                                                                                                                                                                                                        
+[Epochs] [09/10] | [Current LR] 0.000095 | [Trainable Parameters] 118282
+[Loss Train] 0.04473045 | [Accuracy Train] 0.98603 | [Accuracy Test] 0.12040 | [Accuracy Test Interval] [np.float64(0.11785875905276508), np.float64(0.12294124094723494)]
+
+[Time] 73.15s                                                                                                                                                                                                                                                        
+[Epochs] [10/10] | [Current LR] 0.000024 | [Trainable Parameters] 118282
+[Loss Train] 0.03931989 | [Accuracy Train] 0.98752 | [Accuracy Test] 0.12933 | [Accuracy Test Interval] [np.float64(0.12805386797360455), np.float64(0.13060613202639546)]
+
+
+[Train Finished] 506.68s
+
+[Saved] models_saved/SharedMamba_dataset_mnist_lyrs_3_l0.03931989_testacc_0.12933.pt
+(.venv) dadmo@Dadmon:~/Github/ssm-orp/feat/ssm-layer-sharing$ 
