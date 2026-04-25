@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sparse-ssm-pruning"
+version = "0.1.0"
+description = "Replication of SparseSSM paper for Mamba pruning lab"
+requires-python = ">=3.10"
+dependencies = [
+    "torch>=2.1.0",
+    "transformers>=4.40.0",
+    "mamba-ssm>=2.0.0",
+    "causal-conv1d>=1.2.0",
+    "datasets",
+    "tqdm",
+    "numpy",
+    "accelerate",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=7.0"]
+
+[tool.setuptools]
+packages = ["prune", "eval"]

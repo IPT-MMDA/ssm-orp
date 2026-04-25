@@ -1,0 +1,46 @@
+{
+  "sparsity": 0.5,
+  "mode": "ssm",
+  "method": "algorithm1",
+  "ppl_before": {
+    "wikitext2": {
+      "ppl": 22.820333129265546,
+      "ci_low": 22.056150734216754,
+      "ci_high": 23.475844891548583
+    },
+    "c4": {
+      "ppl": 31.435446998061657,
+      "ci_low": 24.986617883222195,
+      "ci_high": 44.14371353594182
+    }
+  },
+  "ppl_after": {
+    "wikitext2": {
+      "ppl": 25.477039859659815,
+      "ci_low": 24.65993409193507,
+      "ci_high": 26.216695410579355
+    },
+    "c4": {
+      "ppl": 34.03244320181731,
+      "ci_low": 27.04312311994238,
+      "ci_high": 47.0963560815697
+    }
+  },
+  "bench_before": {
+    "latency_ms": 182.56,
+    "latency_std_ms": 2.18,
+    "memory_mb": 295.76,
+    "total_params": 129135360,
+    "nonzero_params": 129098465,
+    "sparsity_pct": 0.03
+  },
+  "bench_after": {
+    "latency_ms": 266.96,
+    "latency_std_ms": 36.11,
+    "memory_mb": 295.76,
+    "total_params": 129135360,
+    "nonzero_params": 129098465,
+    "sparsity_pct": 0.03
+  },
+  "speedup": 0.684
+}
