@@ -1,5 +1,8 @@
 # IQC-Inspired Robustness Verification for Transformer Self-Attention
 
+**Reference Paper:** [Safety Verification and Robustness Analysis of Neural Networks via Quadratic Constraints and Semidefinite Programming](https://arxiv.org/abs/1903.01287)
+**Authors:** Mahyar Fazlyab, Manfred Morari, George J. Pappas
+
 ## Abstract
 This experiment adapts continuous robustness analysis to the discrete, sequential domain of NLP. Specifically, it verifies the robustness of the Transformer Self-Attention mechanism under bounded input perturbations (such as typos or synonym replacements mapped to $L_2$ embedding spheres).
 
